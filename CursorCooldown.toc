@@ -1,14 +1,20 @@
-﻿## Interface: 100100
-## Title: Cursor Cooldown
+## Interface: 110000, 110002
+## Title: Cursor Cooldown Reloaded by |cff00ff00Kallye|r
+## Title-frFR: Cursor Cooldown Reloaded, par |cff00ff00Kallye|r
 ## Notes: Display the global cooldown around your cursor. (+ other stuff)
-## Author: TimothyLuke
-## Version: @project-version@
+## Notes-frFR: Affiche le cooldown global autour du curseur (+ autres cd).
+## Author: |cff00ff00Kallye|r (EU-Elune)
+## Version: 11.0.001
 ## OptionalDeps: Ace3, LibStub, LibSharedMedia-3.0
 ## X-Embeds: Ace3, LibStub, LibSharedMedia-3.0
+
 ## X-Category: Interface Enhancement
 ## X-License: GPL v3
-## X-Credits: Nymbia, Nevcairiel (copied parts of Quartz), and original authors bakahar, Finghin and Sancty
+## X-Credits: TimothyLuke, Nymbia, Nevcairiel (copied parts of Quartz), and original authors bakahar, Finghin and Sancty
 ## SavedVariables: CursorCooldownDB
+
+## X-Website: https://github.com/KaspOu/K-Cursor-Cooldown/
+## X-Curse-Project-ID: 1084211
 
 #@no-lib-strip@
 embeds.xml
@@ -25,5 +31,6 @@ Localization\zhCN.lua
 Localization\zhTW.lua
 
 GCD.lua
+GCD.polyfill.lua
 donut.lua
 modules.xml

@@ -301,7 +301,7 @@ end
 function module:UNIT_SPELLCAST_START(_, unit, action)
 	if unit ~= 'player' then return end
 	_, _, _, castStartTime, castEndTime, _, _, _, spellid = UnitCastingInfo(unit)
-	spell,_,_,_,_,_=GetSpellInfo(spellid)
+	spell,_,_,_,_,_=addon.GetSpellInfo(spellid)
 	sendLag = (castSent and castSent > 0) and GetTime() * 1000 - castSent or 0
 	castDuration = castEndTime and castEndTime - castStartTime or 0
 	sendLag = sendLag > castDuration and castDuration or sendLag

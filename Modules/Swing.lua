@@ -15,9 +15,9 @@ local ringMod
 local swingMode
 local playerClass
 
-local autoshot = GetSpellInfo(75)
-local shoot = GetSpellInfo(5019)
-local slam = GetSpellInfo(1464)
+local autoshot = addon.GetSpellInfo(75)
+local shoot = addon.GetSpellInfo(5019)
+local slam = addon.GetSpellInfo(1464)
 local slamStart
 local startTime, duration
 
