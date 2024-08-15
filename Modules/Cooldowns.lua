@@ -135,7 +135,7 @@ function module:PopulateCdSpellsOptions()
 
       local arg = {
 
-        name = tostring(GetSpellInfo(v.spellID)),
+        name = tostring(addon.GetSpellInfo(v.spellID)),
         type = "group",
         args = {
           xPos = {
@@ -253,7 +253,7 @@ function module:GetOptions()
             get = false,
             set = function(info, value)
               if not tonumber(value) then
-                local _, _, _, _, _, _, spellId = GetSpellInfo(value)
+                local _, _, _, _, _, _, spellId = addon.GetSpellInfo(value)
                 value = spellId
               end
               tinsert(self.db.char.cdSpells, {['spellID'] = tonumber(value), ['pos'] = {['x'] = 0, ['y'] = 0}})
@@ -261,7 +261,7 @@ function module:GetOptions()
               self:SPELLS_CHANGED()
             end,
             validate = function(info, value)
-              local spellName = GetSpellInfo(value)
+              local spellName = addon.GetSpellInfo(value)
               if not spellName then return false end
               if addon:GetSpellPosInSpellbook(spellName) then
                 return true
@@ -314,10 +314,10 @@ end
 
 function module:ACTIONBAR_UPDATE_COOLDOWN()
     local _, gcdLeft
-    gcdLeft = GetSpellCooldown(61304)
+    gcdLeft = addon.GetSpellCooldown(61304)
     for _, v in ipairs(cdFrames) do
-      spell = GetSpellBookItemName(v.spell, BOOKTYPE_SPELL)
-      local start, dur = GetSpellCooldown(spell)
+      spell = addon.GetSpellBookItemName(v.spell, addon.BOOKTYPE_SPELL)
+      local start, dur = addon.GetSpellCooldown(spell)
       if type(dur) == "number" and type(gcdLeft) == "number" then
         if dur > gcdLeft then
           v.frame.startTime = start
@@ -335,7 +335,7 @@ function module:SPELLS_CHANGED()
   end
   cdFrames = {}
   for _, v in ipairs(self.db.char.cdSpells) do
-    local spell, _, icon = GetSpellInfo(v.spellID)
+    local spell, _, icon = addon.GetSpellInfo(v.spellID)
     local spellPos = addon:GetSpellPosInSpellbook(spell)
     if spellPos then
       tinsert(cdFrames, {['spell'] = spellPos, ['icon'] = icon, ['pos'] = v.pos}) -- Links frame offset to database value

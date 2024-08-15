@@ -30,10 +30,10 @@ end
 
 function addon:GetSpellPosInSpellbook(spellName)
 	local spellNum = nil
-	for tab = 1, GetNumSpellTabs() do
-		local _, _, offset, numSpells = GetSpellTabInfo(tab)
+	for tab = 1, addon.GetNumSpellTabs() do
+		local _, _, offset, numSpells = addon.GetSpellTabInfo(tab)
 		for i = (1+offset), (offset+numSpells) do
-			local spell = GetSpellBookItemName(i, BOOKTYPE_SPELL)
+			local spell = addon.GetSpellBookItemName(i, addon.BOOKTYPE_SPELL)
 			if spell then
 				if string.lower(spell) == string.lower(spellName) then
 					spellNum = i
@@ -68,7 +68,7 @@ end
 
 function addon:InitializeOptions()
 	options = {
-		name = "Cursor Cooldown",
+		name = "Cursor Cooldown Reloaded",
 		type = "group",
 		args = {
 			unlock = {

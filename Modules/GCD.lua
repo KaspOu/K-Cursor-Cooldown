@@ -231,7 +231,7 @@ end
 function module:ACTIONBAR_UPDATE_COOLDOWN()
   -- if spellNum then
 
-    local start, dur = GetSpellCooldown(61304)
+    local start, dur = addon.GetSpellCooldown(61304)
     if type(dur) == "number" then
       if dur > 0 and dur <= 1.5 then
         gcdFrame.startTime = start
@@ -244,7 +244,7 @@ end
 
 -- function module:SPELLS_CHANGED()
 --   local _, class = UnitClass("player")
---   spellName = GetSpellInfo(spells[class])
+--   spellName = addon.GetSpellInfo(spells[class])
 --   spellNum = addon:GetSpellPosInSpellbook(spellName)
 -- end
 
