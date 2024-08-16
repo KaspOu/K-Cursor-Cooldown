@@ -5,6 +5,7 @@ local L = LibStub("AceLocale-3.0"):GetLocale("CC")
 local dbVersion = 1
 
 local GetTime = GetTime
+--- table List of frames: {['spell']= spellPosition, ['icon']= icon, ['pos']= pos}
 local cdFrames = {}
 local options
 local _, class = UnitClass("player")
@@ -368,7 +369,10 @@ function module:Hide(frame)
 end
 
 local function OnUpdate(self, elapsed)
-  if not self.startTime or not self.duration or self.duration <= 0 then print("exit") return end
+  if not self.startTime or not self.duration or self.duration <= 0 then
+    -- print("exit")
+    return
+  end
   local perc = (GetTime() - self.startTime) / self.duration
   self.texture:SetVertexColor(1.0, perc, perc)
   local dur = floor((self.duration - (GetTime() - self.startTime)) * 10) / 10
