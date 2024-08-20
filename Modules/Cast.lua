@@ -216,6 +216,14 @@ function module:GetOptions()
 							PlayerCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START")
 							PlayerCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_STOP")
 							PlayerCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_UPDATE")
+
+							PlayerCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_SENT")
+							PlayerCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_START")
+							PlayerCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_STOP")
+							PlayerCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_UPDATE")
+							PlayerCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_INTERRUPTIBLE")
+							PlayerCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
+							PlayerCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
 						end
 					end,
 				order = 42
@@ -300,9 +308,10 @@ end
 
 function module:UNIT_SPELLCAST_START(_, unit, action)
 	if unit ~= 'player' then return end
+	local spellid
 	_, _, _, castStartTime, castEndTime, _, _, _, spellid = UnitCastingInfo(unit)
-	spell,_,_,_,_,_=addon.GetSpellInfo(spellid)
-	sendLag = (castSent and castSent > 0) and GetTime() * 1000 - castSent or 0
+	local spell,_,_,_,_,_=addon.GetSpellInfo(spellid)
+	local sendLag = (castSent and castSent > 0) and GetTime() * 1000 - castSent or 0
 	castDuration = castEndTime and castEndTime - castStartTime or 0
 	sendLag = sendLag > castDuration and castDuration or sendLag
 	castLatency = sendLag / castDuration
@@ -335,9 +344,9 @@ end
 
 function module:UNIT_SPELLCAST_CHANNEL_START(event,unit)
 	if unit ~= 'player' then return end
-
+	local spell
 	spell, _, _, castStartTime, castEndTime = UnitChannelInfo(unit)
-	sendLag = (castSent and castSent > 0) and GetTime() * 1000 - castSent or 0
+	local sendLag = (castSent and castSent > 0) and GetTime() * 1000 - castSent or 0
 	castDuration = castEndTime and castEndTime - castStartTime or 0
 	sendLag = sendLag > castDuration and castDuration or sendLag
 	castLatency = sendLag / castDuration
@@ -437,6 +446,14 @@ function module:ApplyOptions()
 			PlayerCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START")
 			PlayerCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_STOP")
 			PlayerCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_UPDATE")
+
+			PlayerCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_SENT")
+			PlayerCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_START")
+			PlayerCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_STOP")
+			PlayerCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_UPDATE")
+			PlayerCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_INTERRUPTIBLE")
+			PlayerCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
+			PlayerCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
 		end
 
 		castFrame:SetScript('OnUpdate', OnUpdate)

@@ -17,6 +17,23 @@ local defaults = {
 	}
 }
 
+local function OnUpdate(self, elapsed)
+	self.texture.timer = self.texture.timer + elapsed;
+	if ( self.texture.timer > 0.02 ) then
+		self.texture.hAngle = self.texture.hAngle + 0.5;
+		self.texture:SetRotation(rad(self.texture.hAngle));
+		self.texture.timer = 0;
+	end
+end
+
+local function OnShow(self)
+	if module.db.profile.rotate then
+		self:SetScript('OnUpdate', OnUpdate)
+	else
+		self:SetScript('OnUpdate', nil)
+	end
+end
+
 function module:ApplyOptions()
 	local anchor = addon.anchor
 	if self:IsEnabled() then
@@ -123,23 +140,6 @@ function module:GetOptions()
 	}
 
 	return options
-end
-
-local function OnUpdate(self, elapsed)
-	self.texture.timer = self.texture.timer + elapsed;
-	if ( self.texture.timer > 0.02 ) then
-		self.texture.hAngle = self.texture.hAngle + 0.5;
-		self.texture:SetRotation(rad(self.texture.hAngle));
-		self.texture.timer = 0;
-	end
-end
-
-local function OnShow(self)
-	if module.db.profile.rotate then
-		self:SetScript('OnUpdate', OnUpdate)
-	else
-		self:SetScript('OnUpdate', nil)
-	end
 end
 
 function module:Show(module)

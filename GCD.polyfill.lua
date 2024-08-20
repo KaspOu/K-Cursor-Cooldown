@@ -1,3 +1,4 @@
+---@diagnostic disable: undefined-global
 local addon = LibStub("AceAddon-3.0"):GetAddon("CC")
 
 -- Since The War Within (11)

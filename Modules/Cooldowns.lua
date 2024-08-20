@@ -131,7 +131,7 @@ function module:PopulateCdSpellsOptions()
     v = nil
   end
   for i, v in ipairs(cdSpells) do
-    if v.spellID ~= null then
+    if v.spellID ~= nil then
 
       local arg = {
 
@@ -316,7 +316,7 @@ function module:ACTIONBAR_UPDATE_COOLDOWN()
     local _, gcdLeft
     gcdLeft = addon.GetSpellCooldown(61304)
     for _, v in ipairs(cdFrames) do
-      spell = addon.GetSpellBookItemName(v.spell, addon.BOOKTYPE_SPELL)
+      local spell = addon.GetSpellBookItemName(v.spell, addon.BOOKTYPE_SPELL)
       local start, dur = addon.GetSpellCooldown(spell)
       if type(dur) == "number" and type(gcdLeft) == "number" then
         if dur > gcdLeft then

@@ -46,6 +46,10 @@ function module:OnEnable()
 		self:RegisterEvent("UNIT_SPELLCAST_START")
 		self:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
 	end
+	if playerClass == "EVOKER" then
+		self:RegisterEvent("UNIT_SPELLCAST_EMPOWER_START")
+		self:RegisterEvent("UNIT_SPELLCAST_EMPOWER_STOP")
+	end
 
 	self:RegisterEvent("UNIT_ATTACK")
 end
@@ -66,7 +70,7 @@ function module:OnInitialize()
 	self.db = addon.db:RegisterNamespace("Swing", defaults)
 	self:FixDatabase()
 	ringMod = addon:GetModule("ring", true)
-	playerClass = UnitClass("player")
+	_, playerClass = UnitClass("player")
 end
 
 function module:GetOptions()
@@ -243,8 +247,9 @@ end
 
 function module:UNIT_SPELLCAST_SUCCEEDED(event, unit, spell)
 	if unit ~= "player" or not swingMode then return end
+	-- TODO: EVOKER Bar support
 	if swingMode == 1 then
-		if spell == slam and slamstart then
+		if spell == slam and slamStart then
 			startTime = startTime + GetTime() - slamStart
 			slamStart = nil
 		end
@@ -256,8 +261,8 @@ function module:UNIT_SPELLCAST_SUCCEEDED(event, unit, spell)
 end
 
 function module:UNIT_SPELLCAST_INTERRUPTED(event, unit, spell)
-	if unit == "player" and spell == slam and slamstart then
-		slamstart = nil
+	if unit == "player" and spell == slam and slamStart then
+		slamStart = nil
 	end
 end
 
