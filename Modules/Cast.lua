@@ -218,9 +218,11 @@ function module:GetOptions()
 							PlayerCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_UPDATE")
 
 							PlayerCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_SENT")
-							PlayerCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_START")
-							PlayerCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_STOP")
-							PlayerCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_UPDATE")
+							if addon.ALL_CLASSES["EVOKER"] ~= nil then
+								PlayerCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_START")
+								PlayerCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_STOP")
+								PlayerCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_UPDATE")
+							end
 							PlayerCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_INTERRUPTIBLE")
 							PlayerCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
 							PlayerCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
@@ -244,6 +246,11 @@ function module:OnEnable()
 	self:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START")
 	self:RegisterEvent("UNIT_SPELLCAST_CHANNEL_STOP")
 	self:RegisterEvent("UNIT_SPELLCAST_CHANNEL_UPDATE")
+	if addon.ALL_CLASSES["EVOKER"] ~= nil then
+		self:RegisterEvent("UNIT_SPELLCAST_EMPOWER_START")
+		self:RegisterEvent("UNIT_SPELLCAST_EMPOWER_STOP")
+		self:RegisterEvent("UNIT_SPELLCAST_EMPOWER_UPDATE")
+	end
 end
 
 function module:OnDisable()
@@ -365,6 +372,16 @@ function module:UNIT_SPELLCAST_CHANNEL_UPDATE(event,unit)
 	castDuration = castEndTime - castStartTime
 end
 
+function module:UNIT_SPELLCAST_EMPOWER_START(event,unit)
+	module:UNIT_SPELLCAST_CHANNEL_START(event,unit)
+end
+function module:UNIT_SPELLCAST_EMPOWER_STOP(event,unit)
+	module:UNIT_SPELLCAST_CHANNEL_STOP(event,unit)
+end
+function module:UNIT_SPELLCAST_EMPOWER_UPDATE(event,unit)
+	module:UNIT_SPELLCAST_CHANNEL_UPDATE(event,unit)
+end
+
 function module:ApplyOptions()
 	local anchor = addon.anchor
 	if self:IsEnabled() then
@@ -436,24 +453,6 @@ function module:ApplyOptions()
 		if self.db.profile.hideCastBar then
 			PlayerCastingBarFrame:UnregisterAllEvents()
 			PlayerCastingBarFrame:Hide()
-		else
-			PlayerCastingBarFrame:UnregisterAllEvents()
-			PlayerCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_START")
-			PlayerCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_STOP")
-			PlayerCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_FAILED")
-			PlayerCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
-			PlayerCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_DELAYED")
-			PlayerCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START")
-			PlayerCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_STOP")
-			PlayerCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_UPDATE")
-
-			PlayerCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_SENT")
-			PlayerCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_START")
-			PlayerCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_STOP")
-			PlayerCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_UPDATE")
-			PlayerCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_INTERRUPTIBLE")
-			PlayerCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
-			PlayerCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
 		end
 
 		castFrame:SetScript('OnUpdate', OnUpdate)

@@ -46,10 +46,6 @@ function module:OnEnable()
 		self:RegisterEvent("UNIT_SPELLCAST_START")
 		self:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
 	end
-	if playerClass == "EVOKER" then
-		self:RegisterEvent("UNIT_SPELLCAST_EMPOWER_START")
-		self:RegisterEvent("UNIT_SPELLCAST_EMPOWER_STOP")
-	end
 
 	self:RegisterEvent("UNIT_ATTACK")
 end

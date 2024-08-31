@@ -135,7 +135,7 @@ function module:PopulateCdSpellsOptions()
 
       local arg = {
 
-        name = tostring(addon.GetSpellInfo(v.spellID)),
+        name = tostring(addon.GetSpellInfo(v.spellID) or "Not found"),
         type = "group",
         args = {
           xPos = {
@@ -143,7 +143,7 @@ function module:PopulateCdSpellsOptions()
             type = "input",
             get = function()
               if cdSpells[i] then
-                return tostring(cdSpells[i].pos.x) 
+                return tostring(cdSpells[i].pos.x)
               end
             end,
             set = function(info, value)
@@ -329,16 +329,17 @@ function module:ACTIONBAR_UPDATE_COOLDOWN()
 end
 
 function module:SPELLS_CHANGED()
-
   for _, v in ipairs(cdFrames) do
     if v.frame then FrameHandler:DeleteFrame(v.frame) end
   end
   cdFrames = {}
   for _, v in ipairs(self.db.char.cdSpells) do
     local spell, _, icon = addon.GetSpellInfo(v.spellID)
-    local spellPos = addon:GetSpellPosInSpellbook(spell)
-    if spellPos then
-      tinsert(cdFrames, {['spell'] = spellPos, ['icon'] = icon, ['pos'] = v.pos}) -- Links frame offset to database value
+    if not not spell then
+      local spellPos = addon:GetSpellPosInSpellbook(spell)
+      if spellPos then
+        tinsert(cdFrames, {['spell'] = spellPos, ['icon'] = icon, ['pos'] = v.pos}) -- Links frame offset to database value
+      end
     end
   end
   self:ApplyOptions()
