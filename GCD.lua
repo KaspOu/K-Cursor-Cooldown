@@ -9,9 +9,6 @@ addon:SetDefaultModuleLibraries("AceEvent-3.0")
 local defaults, options
 local showRequests = {}
 
-addon.ALL_CLASSES = {};
-for _, class in ipairs(CLASS_SORT_ORDER) do addon.ALL_CLASSES[class] = LOCALIZED_CLASS_NAMES_MALE[class] end;
-
 function addon:Show(name)
 	showRequests[name] = true
 	self.anchor:Show()
