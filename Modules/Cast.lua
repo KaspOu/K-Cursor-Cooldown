@@ -218,7 +218,7 @@ function module:GetOptions()
 							PlayerCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_UPDATE")
 
 							PlayerCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_SENT")
-							if addon.ALL_CLASSES["EVOKER"] ~= nil then
+							if RAID_CLASS_COLORS.EVOKER ~= nil then
 								PlayerCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_START")
 								PlayerCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_STOP")
 								PlayerCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_UPDATE")
@@ -246,7 +246,7 @@ function module:OnEnable()
 	self:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START")
 	self:RegisterEvent("UNIT_SPELLCAST_CHANNEL_STOP")
 	self:RegisterEvent("UNIT_SPELLCAST_CHANNEL_UPDATE")
-	if addon.ALL_CLASSES["EVOKER"] ~= nil then
+	if RAID_CLASS_COLORS.EVOKER ~= nil then
 		self:RegisterEvent("UNIT_SPELLCAST_EMPOWER_START")
 		self:RegisterEvent("UNIT_SPELLCAST_EMPOWER_STOP")
 		self:RegisterEvent("UNIT_SPELLCAST_EMPOWER_UPDATE")
