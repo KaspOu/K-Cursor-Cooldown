@@ -269,7 +269,7 @@ function module:Show()
 
 	castFrame:Show()
 
-	local angle = castLatency * 360
+	local angle =  math.max(.1, castLatency * 360)
 	if not module.db.profile.sparkOnly then
 		castFrame.latencyDonut:SetAngle(angle)
 	end
