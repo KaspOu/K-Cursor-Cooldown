@@ -1,4 +1,4 @@
-## Interface: 110002, 40400, 11504
+## Interface: 110002, 110005, 40400, 40401, 11504
 ## Title: Cursor Cooldown Reloaded by |cff00ff00Kallye|r
 ## Title-frFR: Cursor Cooldown Reloaded, par |cff00ff00Kallye|r
 ## Notes: Display the global cooldown around your cursor. (+ other stuff)
