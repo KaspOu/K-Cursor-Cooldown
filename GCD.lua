@@ -299,7 +299,7 @@ function addon:Unlock()
 		end
 	end
 	if unlocked then
-		local cursor = cursorFrame or CreateFrame("Frame")
+		local cursor = cursorFrame or CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
 		cursor:SetWidth(20)
 		cursor:SetHeight(20)
 		cursor:SetBackdrop(cursorBackdrop)
