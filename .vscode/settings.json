@@ -12,7 +12,7 @@
         "utf8": "disable"
     },
     "Lua.workspace.library": [
-        "c:\\Users\\kaspo\\.cursor\\extensions\\ketho.wow-api-0.17.5\\Annotations"
+        "c:\\Users\\kaspo\\.cursor\\extensions\\ketho.wow-api-0.17.6\\Annotations"
     ],
     "Lua.diagnostics.globals": [
         "UIParent",
@@ -47,7 +47,9 @@
         "PlayerCastingBarFrame",
         "LibStub",
         "class",
-        "CLASS"
+        "CLASS",
+        "LOCALIZED_CLASS_NAMES_MALE",
+        "CLASS_SORT_ORDER"
     ],
     "workbench.colorCustomizations": {
         "activityBar.activeBackground": "#fa1b49",
