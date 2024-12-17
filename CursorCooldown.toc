@@ -1,10 +1,10 @@
-## Interface: 110005, 40401, 11505
+## Interface: 110005, 110007, 40401, 11505
 ## Title: Cursor Cooldown Reloaded by |cff00ff00Kallye|r
 ## Title-frFR: Cursor Cooldown Reloaded, par |cff00ff00Kallye|r
 ## Notes: Display the global cooldown around your cursor. (+ other stuff)
 ## Notes-frFR: Affiche le cooldown global autour du curseur (+ autres cd).
 ## Author: |cff00ff00Kallye|r (EU-Elune)
-## Version: 11.0.502
+## Version: 11.0.701
 ## OptionalDeps: Ace3, LibStub, LibSharedMedia-3.0
 ## X-Embeds: Ace3, LibStub, LibSharedMedia-3.0
 
