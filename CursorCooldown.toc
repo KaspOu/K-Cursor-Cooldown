@@ -4,7 +4,7 @@
 ## Notes: Display the global cooldown around your cursor. (+ other stuff)
 ## Notes-frFR: Affiche le cooldown global autour du curseur (+ autres cd).
 ## Author: |cff00ff00Kallye|r (EU-Elune)
-## Version: 11.0.701
+## Version: 11.0.702
 ## OptionalDeps: Ace3, LibStub, LibSharedMedia-3.0
 ## X-Embeds: Ace3, LibStub, LibSharedMedia-3.0
 
