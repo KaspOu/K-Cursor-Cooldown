@@ -311,7 +311,8 @@ function addon:Unlock()
 											self:StopMovingOrSizing()
 											if button == "RightButton" then
 												local x, y = self:GetCenter()
-												addon.db.profile.position.x, addon.db.profile.position.y = x, y
+												addon.db.profile.position.x, addon.db.profile.position.y = math.floor(x* cursor:GetEffectiveScale()), math.floor(y* cursor:GetEffectiveScale())
+												addon.db.profile.attachToMouse = false;
 												self:Hide()
 												for name, module in addon:IterateModules() do
 													if addon.db.profile.modules[name] and module.Lock then
