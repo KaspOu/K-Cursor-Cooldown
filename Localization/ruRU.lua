@@ -1,89 +1,50 @@
 local L = LibStub("AceLocale-3.0"):NewLocale("CC", "ruRU")
 if not L then return end
-
---[[Translation missing --]]
-L["Add Spell"] = "Add Spell"
---[[Translation missing --]]
-L["All specified colors are vertex colors! (see wowwiki.com)"] = "All specified colors are vertex colors! (see wowwiki.com)"
---[[Translation missing --]]
-L["All unlockable modules are disabled!"] = "All unlockable modules are disabled!"
---[[Translation missing --]]
-L["Attach to cursor"] = "Attach to cursor"
---[[Translation missing --]]
-L["Auto arrange icons"] = "Auto arrange icons"
---[[Translation missing --]]
-L["Background"] = "Background"
---[[Translation missing --]]
-L["Bar"] = "Bar"
---[[Translation missing --]]
-L["Border"] = "Border"
---[[Translation missing --]]
-L["Bottom"] = "Bottom"
---[[Translation missing --]]
-L["Bottom has to be a number!"] = "Bottom has to be a number!"
-L["Cast color"] = "Цвет применения заклинания"
-L["Casttime"] = "Время применения"
+-- Translator ZamestoTV
+L["Add Spell"] = "Добавить заклинание"
+L["All specified colors are vertex colors! (see wowwiki.com)"] = "Все указанные цвета являются вершинными цветами! (см. wowwiki.com)"
+L["All unlockable modules are disabled!"] = "Все разблокируемые модули отключены!"
+L["Attach to cursor"] = "Прикрепить к курсору"
+L["Auto arrange icons"] = "Автоматически упорядочивать иконки"
+L["Background"] = "Фон"
+L["Bar"] = "Полоса"
+L["Border"] = "Граница"
+L["Bottom"] = "Низ"
+L["Bottom has to be a number!"] = "Внизу должно быть число!"
+L["Cast color"] = "Цвет произнесения"
+L["Casttime"] = "Время произнесения"
 L["Color"] = "Цвет"
---[[Translation missing --]]
-L["Colors"] = "Colors"
---[[Translation missing --]]
-L["Display"] = "Display"
-L["Enabled"] = "Включить"
---[[Translation missing --]]
-L["Font"] = "Font"
---[[Translation missing --]]
-L["Font Size"] = "Font Size"
---[[Translation missing --]]
-L["General"] = "General"
---[[Translation missing --]]
-L["Hide default castbar"] = "Hide default castbar"
---[[Translation missing --]]
-L["Horizontal Offset"] = "Horizontal Offset"
---[[Translation missing --]]
-L["Icon size"] = "Icon size"
+L["Colors"] = "Цвета"
+L["Display"] = "Отображение"
+L["Enabled"] = "Включено"
+L["Font"] = "Шрифт"
+L["Font Size"] = "Размер шрифта"
+L["General"] = "Общие"
+L["Hide default castbar"] = "Скрыть стандартную полосу произнесения"
+L["Horizontal Offset"] = "Горизонтальное смещение"
+L["Icon size"] = "Размер иконки"
 L["Latency color"] = "Цвет задержки"
---[[Translation missing --]]
-L["Left"] = "Left"
---[[Translation missing --]]
-L["Left has to be a number!"] = "Left has to be a number!"
---[[Translation missing --]]
-L["Miscellaneous"] = "Miscellaneous"
---[[Translation missing --]]
-L["Position"] = "Position"
---[[Translation missing --]]
-L["Primary"] = "Primary"
---[[Translation missing --]]
-L["Radius"] = "Radius"
---[[Translation missing --]]
-L["Remove Spell"] = "Remove Spell"
---[[Translation missing --]]
-L["Restore defaults"] = "Restore defaults"
+L["Left"] = "Лево"
+L["Left has to be a number!"] = "Слева должно быть число!"
+L["Miscellaneous"] = "Разное"
+L["Position"] = "Позиция"
+L["Primary"] = "Основной"
+L["Radius"] = "Радиус"
+L["Remove Spell"] = "Удалить заклинание"
+L["Restore defaults"] = "Восстановить по умолчанию"
 L["Ring"] = "Кольцо"
---[[Translation missing --]]
-L["Rotate"] = "Rotate"
---[[Translation missing --]]
-L["Secondary"] = "Secondary"
---[[Translation missing --]]
-L["Show spark only"] = "Show spark only"
+L["Rotate"] = "Вращать"
+L["Secondary"] = "Вторичный"
+L["Show spark only"] = "Показывать только искру"
 L["Spark"] = "Искра"
---[[Translation missing --]]
-L["Spell Text"] = "Spell Text"
-L["Spellcds"] = "Восстановление заклинаний"
---[[Translation missing --]]
-L["Spells"] = "Spells"
---[[Translation missing --]]
-L["Talent Specs"] = "Talent Specs"
---[[Translation missing --]]
-L["Text"] = "Text"
+L["Spell Text"] = "Текст заклинания"
+L["Spellcds"] = "Перезарядка заклинаний"
+L["Spells"] = "Заклинания"
+L["Talent Specs"] = "Специализации талантов"
+L["Text"] = "Текст"
 L["Texture"] = "Текстура"
---[[Translation missing --]]
-L["Thickness"] = "Thickness"
---[[Translation missing --]]
-L["Unlock"] = "Unlock"
---[[Translation missing --]]
-L["Vertical Offset"] = "Vertical Offset"
---[[Translation missing --]]
-L["x-Offset"] = "x-Offset"
---[[Translation missing --]]
-L["y-Offset"] = "y-Offset"
-
+L["Thickness"] = "Толщина"
+L["Unlock"] = "Разблокировать"
+L["Vertical Offset"] = "Вертикальное смещение"
+L["x-Offset"] = "Смещение по X"
+L["y-Offset"] = "Смещение по Y"
