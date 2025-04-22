@@ -49,7 +49,8 @@
         "class",
         "CLASS",
         "LOCALIZED_CLASS_NAMES_MALE",
-        "CLASS_SORT_ORDER"
+        "CLASS_SORT_ORDER",
+        "RAID_CLASS_COLORS"
     ],
     "workbench.colorCustomizations": {
         "activityBar.activeBackground": "#fa1b49",
