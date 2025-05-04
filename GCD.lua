@@ -32,6 +32,10 @@ function addon:GetSpellPosInSpellbook(spellName)
 	local spellNum = nil
 	for tab = 1, addon.GetNumSpellTabs() do
 		local _, _, offset, numSpells = addon.GetSpellTabInfo(tab)
+		-- Spell book tab not found, can occur when you exit followers dungeon
+		if not offset then
+			return nil;
+		end
 		for i = (1+offset), (offset+numSpells) do
 			local spell = addon.GetSpellBookItemName(i, addon.BOOKTYPE_SPELL)
 			if spell then

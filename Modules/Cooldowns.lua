@@ -314,8 +314,7 @@ function module:GetOptions()
 end
 
 function module:ACTIONBAR_UPDATE_COOLDOWN()
-    local _, gcdLeft
-    gcdLeft = addon.GetSpellCooldown(61304)
+    local _, gcdLeft = addon.GetSpellCooldown(61304)
     for _, v in ipairs(cdFrames) do
       local spell = addon.GetSpellBookItemName(v.spell, addon.BOOKTYPE_SPELL)
       local start, dur = addon.GetSpellCooldown(spell)
