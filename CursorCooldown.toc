@@ -4,7 +4,7 @@
 ## Notes: Display the global cooldown around your cursor. (+ other stuff)
 ## Notes-frFR: Affiche le cooldown global autour du curseur (+ autres cd).
 ## Author: |cff00ff00Kallye|r (EU-Elune)
-## Version: 11.1.502
+## Version: 11.1.503
 ## OptionalDeps: Ace3, LibStub, LibSharedMedia-3.0
 ## X-Embeds: Ace3, LibStub, LibSharedMedia-3.0
 
@@ -12,6 +12,7 @@
 ## X-License: GPL v3
 ## X-Credits: TimothyLuke, Nymbia, Nevcairiel (copied parts of Quartz), and original authors bakahar, Finghin and Sancty
 ## SavedVariables: CursorCooldownDB
+## IconTexture: Interface\Icons\INV_Artifact_DimensionalRift
 
 ## X-Website: https://github.com/KaspOu/K-Cursor-Cooldown/
 ## X-Curse-Project-ID: 1084211
