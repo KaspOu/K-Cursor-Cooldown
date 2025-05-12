@@ -248,6 +248,8 @@ function addon:OnInitialize()
 	ACD:AddToBlizOptions("CC", optionTitle)
 	self:RegisterChatCommand("gcd", self.OpenConfig)
 	self:RegisterChatCommand("cc", self.OpenConfig)
+	self:RegisterChatCommand("ccr", self.OpenConfig)
+	self:RegisterChatCommand("ccd", self.OpenConfig)
 end
 
 function addon:OnEnable()
@@ -327,12 +329,13 @@ function addon:Unlock()
 														module:Lock()
 													end
 												end
+												print("|cffffff00CC: ", L["Bar position saved!"])
 											end
 										end)
 		cursor:SetScript("OnEnter", function(self)
 										GameTooltip:SetOwner(self, "ANCHOR_CURSOR")
-										GameTooltip:SetText("Right Click")
-										GameTooltip:AddLine("to lock the icons and save their positions", 1, 1, 1)
+										GameTooltip:SetText(L["Right Click"])
+										GameTooltip:AddLine(L["to lock the cooldown bar and save its position"], 1, 1, 1)
 										GameTooltip:Show()
 									end)
 		cursor:SetScript("OnLeave", function(self)
