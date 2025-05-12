@@ -16,6 +16,8 @@ L["Background"] = "Background"
 --[[Translation missing --]]
 L["Bar"] = "Bar"
 --[[Translation missing --]]
+L["Bar position saved!"] = "Bar position saved!"
+--[[Translation missing --]]
 L["Border"] = "Border"
 --[[Translation missing --]]
 L["Bottom"] = "Bottom"
@@ -64,6 +66,8 @@ L["Remove Spell"] = "Remove Spell"
 --[[Translation missing --]]
 L["Restore defaults"] = "Restore defaults"
 --[[Translation missing --]]
+L["Right Click"] = "Right Click"
+--[[Translation missing --]]
 L["Ring"] = "Ring"
 --[[Translation missing --]]
 L["Rotate"] = "Rotate"
@@ -85,6 +89,8 @@ L["Talent Specs"] = "Talent Specs"
 L["Text"] = "Text"
 --[[Translation missing --]]
 L["Texture"] = "Texture"
+--[[Translation missing --]]
+L["to lock the cooldown bar and save its position"] = "to lock the cooldown bar and save its position"
 --[[Translation missing --]]
 L["Thickness"] = "Thickness"
 --[[Translation missing --]]
