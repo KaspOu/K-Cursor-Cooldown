@@ -9,6 +9,7 @@
 ## X-Embeds: Ace3, LibStub, LibSharedMedia-3.0
 
 ## X-Category: Interface Enhancement
+## X-Localizations: enUS, frFR, ruRU, deDE, esES, esMX, koKR, zhCN, zhTW
 ## X-License: GPL v3
 ## X-Credits: TimothyLuke, Nymbia, Nevcairiel (copied parts of Quartz), and original authors bakahar, Finghin and Sancty
 ## SavedVariables: CursorCooldownDB

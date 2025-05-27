@@ -236,9 +236,16 @@ function addon:OnInitialize()
 	self:FixDatabase()
 
 	self:InitializeOptions()
+	local optionTitle = "Cursor Cooldown"
+	--@do-not-package@
+	-- Development icons
+	local devVer = "|TInterface/PVPFrame/Icons/prestige-icon-8-3:16|t"
+	options.name = options.name..devVer
+	optionTitle = optionTitle..devVer
+	--@end-do-not-package@
 	LibStub("AceConfig-3.0"):RegisterOptionsTable("CC", options)
 	ACD:SetDefaultSize("CC", 640, 480)
-	ACD:AddToBlizOptions("CC", "Cursor Cooldown")
+	ACD:AddToBlizOptions("CC", optionTitle)
 	self:RegisterChatCommand("gcd", self.OpenConfig)
 	self:RegisterChatCommand("cc", self.OpenConfig)
 end
