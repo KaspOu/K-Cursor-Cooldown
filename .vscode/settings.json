@@ -12,7 +12,7 @@
         "utf8": "disable"
     },
     "Lua.workspace.library": [
-        "c:\\Users\\Utilisateur\\.cursor\\extensions\\ketho.wow-api-0.20.6\\Annotations\\Core"
+        "c:\\Users\\Utilisateur\\.cursor\\extensions\\ketho.wow-api-0.20.7\\Annotations\\Core"
     ],
     "Lua.diagnostics.globals": [
         "UIParent",
