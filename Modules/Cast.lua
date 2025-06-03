@@ -90,6 +90,18 @@ function module:GetOptions()
 						end,
 				order = 3
 			},
+			reverseChanneling = {
+				name = L["Reverse channeling"],
+				type = "toggle",
+				disabled = function() return not addon.db.profile.modules.cast end,
+				get = function(info) return self.db.profile.reverseChanneling end,
+				set = function(info,val)
+						self.db.profile.reverseChanneling = val
+						self:ApplyOptions()
+					end,
+				order = 4,
+				width = "double"
+			},
 			colors = {
 				name = L["Colors"],
 				type = "header",
@@ -170,7 +182,8 @@ function module:GetOptions()
 							self:ApplyOptions()
 						end,
 				values = media:HashTable("font"),
-				order = 32
+				order = 32,
+				width= "double"
 			},
 			fontSize = {
 				name = L["Font Size"],
@@ -184,6 +197,18 @@ function module:GetOptions()
 							self.db.profile.spellText.fontSize = value
 							self:ApplyOptions()
 						end,
+				order = 33
+			},
+			fontColor = {
+				name = L["Color"],
+				type = "color",
+				disabled = function() return (not addon.db.profile.modules.cast or not self.db.profile.spellText.enabled) end,
+				get = function(info) return self.db.profile.spellText.fontColor.r, self.db.profile.spellText.fontColor.g, self.db.profile.spellText.fontColor.b, self.db.profile.spellText.fontColor.a end,
+				set = function(info, r, g, b, a)
+							self.db.profile.spellText.fontColor = {r=r, g=g, b=b, a=a}
+							self:ApplyOptions()
+						end,
+				hasAlpha = true,
 				order = 34
 			},
 			relativeX = {
@@ -198,7 +223,7 @@ function module:GetOptions()
 							self.db.profile.spellText.relativeX = value
 							self:ApplyOptions()
 						end,
-				order = 33
+				order = 37
 			},
 			relativeY = {
 				name = L["Vertical Offset"],
@@ -212,34 +237,12 @@ function module:GetOptions()
 							self.db.profile.spellText.relativeY = value
 							self:ApplyOptions()
 						end,
-				order = 35
-			},
-			fontColor = {
-				name = L["Color"],
-				type = "color",
-				disabled = function() return (not addon.db.profile.modules.cast or not self.db.profile.spellText.enabled) end,
-				get = function(info) return self.db.profile.spellText.fontColor.r, self.db.profile.spellText.fontColor.g, self.db.profile.spellText.fontColor.b, self.db.profile.spellText.fontColor.a end,
-				set = function(info, r, g, b, a)
-							self.db.profile.spellText.fontColor = {r=r, g=g, b=b, a=a}
-							self:ApplyOptions()
-						end,
-				hasAlpha = true,
-				order = 36
+				order = 38
 			},
 			misc = {
 				name = L["Miscellaneous"],
 				type = "header",
 				order = 40
-			},
-			defaults = {
-				name = L["Restore defaults"],
-				type = "execute",
-				disabled = function() return not addon.db.profile.modules.cast end,
-				func = function()
-							self.db:ResetProfile()
-							self:ApplyOptions()
-						end,
-				order = 41
 			},
 			hideCastBar = {
 				name = L["Hide default castbar"],
@@ -273,7 +276,18 @@ function module:GetOptions()
 							blizzardCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
 						end
 					end,
-				order = 42
+				order = 42,
+				width = "double"
+			},
+			defaults = {
+				name = L["Restore defaults"],
+				type = "execute",
+				disabled = function() return not addon.db.profile.modules.cast end,
+				func = function()
+							self.db:ResetProfile()
+							self:ApplyOptions()
+						end,
+				order = 43
 			}
 		}
 	}
@@ -334,6 +348,9 @@ local function OnUpdate(self, elapsed)
 	local castPerc = (1000 * GetTime() - castStartTime) / castDuration
 	if castDuration ~= 0 and castPerc < 1 then
 		local angle = castPerc * 360
+		if (module.db.profile.reverseChanneling and blizzardCastingBarFrame.channeling) then
+			angle = (1 - castPerc) * 360
+		end
 		if not module.db.profile.sparkOnly then
 			castFrame.donut:SetAngle(angle)
 		end
@@ -369,6 +386,7 @@ function module:UNIT_SPELLCAST_START(_, unit, action)
 	castDuration = castEndTime and castEndTime - castStartTime or 0
 	sendLag = sendLag > castDuration and castDuration or sendLag
 	castLatency = sendLag / castDuration
+
 	if castFrame.spellText then
 		castFrame.spellText:SetText(text or spell)
 	end
