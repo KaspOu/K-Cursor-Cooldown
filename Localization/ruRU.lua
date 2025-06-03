@@ -35,6 +35,8 @@ L["Radius"] = "Радиус"
 L["Remove Spell"] = "Удалить заклинание"
 L["Restore defaults"] = "Восстановить по умолчанию"
 --[[Translation missing --]]
+L["Reverse channeling"] = "Reverse channeling"
+--[[Translation missing --]]
 L["Right Click"] = "Right Click"
 L["Ring"] = "Кольцо"
 L["Rotate"] = "Вращать"
