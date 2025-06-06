@@ -75,7 +75,7 @@ function module:GetOptions()
 				name = L["Thickness"],
 				type = "range",
 				min = 15,
-				max = 25,
+				max = 35,
 				step = 5,
 				disabled = function() return not addon.db.profile.modules.cast end,
 				get = function(info) return self.db.profile.thickness end,
@@ -203,6 +203,7 @@ function module:GetOptions()
 				get = function(info) return self.db.profile.hideCastBar end,
 				set = function(info,val)
 						self.db.profile.hideCastBar = val
+						local PlayerCastingBarFrame = PlayerCastingBarFrame or CastingBarFrame
 						if val then
 							PlayerCastingBarFrame:UnregisterAllEvents()
 							PlayerCastingBarFrame:Hide()
@@ -333,23 +334,23 @@ function module:UNIT_SPELLCAST_STOP(_, unit)
 	self:Hide()
 end
 
-function module:UNIT_SPELLCAST_FAILED(event, unit)
+function module:UNIT_SPELLCAST_FAILED(_, unit)
 	if unit ~= 'player' then return end
 	--self:Hide()
 end
 
-function module:UNIT_SPELLCAST_INTERRUPTED(event, unit)
+function module:UNIT_SPELLCAST_INTERRUPTED(_, unit)
 	if unit ~= 'player' then return end
 	self:Hide()
 end
 
-function module:UNIT_SPELLCAST_DELAYED(event, unit)
+function module:UNIT_SPELLCAST_DELAYED(_, unit)
 	if unit ~= 'player' then return end
 	_, _, _, _, castStartTime, castEndTime = UnitCastingInfo(unit)
 	castDuration = castEndTime and castEndTime - castStartTime or 0
 end
 
-function module:UNIT_SPELLCAST_CHANNEL_START(event,unit)
+function module:UNIT_SPELLCAST_CHANNEL_START(_,unit)
 	if unit ~= 'player' then return end
 	local spell
 	spell, _, _, castStartTime, castEndTime = UnitChannelInfo(unit)
@@ -361,12 +362,12 @@ function module:UNIT_SPELLCAST_CHANNEL_START(event,unit)
 	self:Show()
 end
 
-function module:UNIT_SPELLCAST_CHANNEL_STOP(event,unit)
+function module:UNIT_SPELLCAST_CHANNEL_STOP(_,unit)
 	if unit ~= 'player' then return end
 	self:Hide()
 end
 
-function module:UNIT_SPELLCAST_CHANNEL_UPDATE(event,unit)
+function module:UNIT_SPELLCAST_CHANNEL_UPDATE(_,unit)
 	if unit ~= 'player' then return end
 	_, _, _, castStartTime, castEndTime = UnitChannelInfo(unit)
 	castDuration = castEndTime - castStartTime
@@ -451,6 +452,7 @@ function module:ApplyOptions()
 		end
 
 		if self.db.profile.hideCastBar then
+			local PlayerCastingBarFrame = PlayerCastingBarFrame or CastingBarFrame
 			PlayerCastingBarFrame:UnregisterAllEvents()
 			PlayerCastingBarFrame:Hide()
 		end
