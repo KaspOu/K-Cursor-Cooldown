@@ -9,6 +9,8 @@ L["Attach to cursor"] = "커서에 붙이기"
 L["Auto arrange icons"] = "자동 아이콘 정렬"
 L["Background"] = "배경"
 L["Bar"] = "Bar"
+--[[Translation missing --]]
+L["Bar position saved!"] = "Bar position saved!"
 L["Border"] = "경계"
 L["Bottom"] = "바닥"
 --[[Translation missing --]]
@@ -40,6 +42,8 @@ L["Radius"] = "반지름"
 L["Remove Spell"] = "주문 제거"
 L["Restore defaults"] = "기본값 복구"
 --[[Translation missing --]]
+L["Right Click"] = "Right Click"
+--[[Translation missing --]]
 L["Ring"] = "Ring"
 L["Rotate"] = "회전"
 --[[Translation missing --]]
@@ -55,6 +59,8 @@ L["Spells"] = "주문"
 L["Talent Specs"] = "특성 스펙"
 L["Text"] = "텍스트"
 L["Texture"] = "텍스쳐"
+--[[Translation missing --]]
+L["to lock the cooldown bar and save its position"] = "to lock the cooldown bar and save its position"
 --[[Translation missing --]]
 L["Thickness"] = "Thickness"
 L["Unlock"] = "잠금 해제"
