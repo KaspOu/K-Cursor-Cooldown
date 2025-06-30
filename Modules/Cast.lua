@@ -276,11 +276,14 @@ function module:Show()
 	end
 end
 
-function module:Hide()
+function module:Hide(hideGcd)
 	castFrame:Hide()
 
 	if ringMod and ringMod:IsEnabled() then ringMod:Hide("cast") end
 	addon:Hide("cast")
+	if (hideGcd) then
+		addon:Hide("gcd")
+	end
 end
 
 local function OnUpdate(self, elapsed)
@@ -331,12 +334,12 @@ end
 
 function module:UNIT_SPELLCAST_STOP(_, unit)
 	if unit ~= 'player' then return end
-	self:Hide()
+	self:Hide(true)
 end
 
 function module:UNIT_SPELLCAST_FAILED(_, unit)
 	if unit ~= 'player' then return end
-	--self:Hide()
+	self:Hide(true)
 end
 
 function module:UNIT_SPELLCAST_INTERRUPTED(_, unit)
@@ -364,7 +367,7 @@ end
 
 function module:UNIT_SPELLCAST_CHANNEL_STOP(_,unit)
 	if unit ~= 'player' then return end
-	self:Hide()
+	self:Hide(true)
 end
 
 function module:UNIT_SPELLCAST_CHANNEL_UPDATE(_,unit)
