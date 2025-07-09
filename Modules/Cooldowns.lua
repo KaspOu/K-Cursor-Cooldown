@@ -9,6 +9,7 @@ local GetTime = GetTime
 local cdFrames = {}
 local options
 local _, class = UnitClass("player")
+local _, _, _, build = GetBuildInfo()
 
 local FrameHandler = {
   framePool = {}
@@ -66,6 +67,9 @@ local cdSpells = {
   },
   ["MAGE"] = {
     {['spellID'] = 80353, ['pos'] = {['x'] = 0, ['y'] = 0}},
+  },
+  ["MONK"] = {
+    {['spellID'] = 115151, ['pos'] = {['x'] = 0, ['y'] = 0}},
   }
 }
 
@@ -329,19 +333,35 @@ function module:ACTIONBAR_UPDATE_COOLDOWN()
 end
 
 function module:SPELLS_CHANGED()
-  for _, v in ipairs(cdFrames) do
-    if v.frame then FrameHandler:DeleteFrame(v.frame) end
-  end
-  cdFrames = {}
+  local renewCDFrames = {}
   for _, v in ipairs(self.db.char.cdSpells) do
     local spell, _, icon = addon.GetSpellInfo(v.spellID)
     if not not spell then
       local spellPos = addon:GetSpellPosInSpellbook(spell)
       if spellPos then
-        tinsert(cdFrames, {['spell'] = spellPos, ['icon'] = icon, ['pos'] = v.pos}) -- Links frame offset to database value
+        tinsert(renewCDFrames, {['spell'] = spellPos, ['icon'] = icon, ['pos'] = v.pos}) -- Links frame offset to database value
       end
     end
   end
+
+  -- FIXME: Mists Classic BUG: SPELLS_CHANGED occurs too frequently for Monk: compare spells
+  if class == "MONK" and build < 60000 and #cdFrames == #renewCDFrames then
+    local hasChanged = false
+    for i = 1, #cdFrames do
+      if cdFrames[i].spell ~= renewCDFrames[i].spell or cdFrames[i].icon ~= renewCDFrames[i].icon or cdFrames[i].pos.x ~= renewCDFrames[i].pos.x or cdFrames[i].pos.y ~= renewCDFrames[i].pos.y then
+        hasChanged = true
+        break
+      end
+    end
+    if not hasChanged then
+      return
+    end
+  end
+
+  for _, v in ipairs(cdFrames) do
+    if v.frame then FrameHandler:DeleteFrame(v.frame) end
+  end
+  cdFrames = renewCDFrames
   self:ApplyOptions()
 end
 
