@@ -153,6 +153,7 @@ function module:PopulateCdSpellsOptions()
             end,
             set = function(info, value)
               cdSpells[i].pos.x = tonumber(value)
+              self:ApplyOptions()
             end,
             validate = function(info, value) if tonumber(value) == nil then return "That's not a number!" end return true end,
             order = 1
@@ -162,10 +163,13 @@ function module:PopulateCdSpellsOptions()
             type = "input",
             get = function() 
               if cdSpells[i] then
-                return tostring(cdSpells[i].pos.y) 
+                return tostring(cdSpells[i].pos.y)
               end
             end,
-            set = function(info, value) cdSpells[i].pos.y = tonumber(value) end,
+            set = function(info, value)
+              cdSpells[i].pos.y = tonumber(value)
+              self:ApplyOptions()
+            end,
             validate = function(info, value) if tonumber(value) == nil then return "That's not a number!" end return true end,
             order = 2
           },
@@ -346,14 +350,14 @@ function module:SPELLS_CHANGED()
 
   -- FIXME: Mists Classic BUG: SPELLS_CHANGED occurs too frequently for Monk: compare spells
   if class == "MONK" and build < 60000 and #cdFrames == #renewCDFrames then
-    local hasChanged = false
+    local spellsChanged = false
     for i = 1, #cdFrames do
-      if cdFrames[i].spell ~= renewCDFrames[i].spell or cdFrames[i].icon ~= renewCDFrames[i].icon or cdFrames[i].pos.x ~= renewCDFrames[i].pos.x or cdFrames[i].pos.y ~= renewCDFrames[i].pos.y then
-        hasChanged = true
+      if cdFrames[i].spell ~= renewCDFrames[i].spell then
+        spellsChanged = true
         break
       end
     end
-    if not hasChanged then
+    if not spellsChanged then
       return
     end
   end
