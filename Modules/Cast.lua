@@ -22,7 +22,10 @@ local defaults = {
 		spellText = {
 			enabled = false,
 			font = "Calibri",
-			fontSize = 12
+			fontSize = 12,
+			fontColor = {r=1, g=1, b=1, a=0.8},
+			relativeX = 0,
+			relativeY = 0,
 		},
 		hideCastBar = false
 	}
@@ -179,7 +182,47 @@ function module:GetOptions()
 							self.db.profile.spellText.fontSize = value
 							self:ApplyOptions()
 						end,
+				order = 34
+			},
+			relativeX = {
+				name = L["Horizontal Offset"],
+				type = "range",
+				disabled = function() return (not addon.db.profile.modules.cast or not self.db.profile.spellText.enabled) end,
+				min = -60,
+				max = 60,
+				step = 2,
+				get = function() return self.db.profile.spellText.relativeX end,
+				set = function(_, value)
+							self.db.profile.spellText.relativeX = value
+							self:ApplyOptions()
+						end,
 				order = 33
+			},
+			relativeY = {
+				name = L["Vertical Offset"],
+				type = "range",
+				disabled = function() return (not addon.db.profile.modules.cast or not self.db.profile.spellText.enabled) end,
+				min = -80,
+				max = 80,
+				step = 2,
+				get = function() return self.db.profile.spellText.relativeY end,
+				set = function(_, value)
+							self.db.profile.spellText.relativeY = value
+							self:ApplyOptions()
+						end,
+				order = 35
+			},
+			fontColor = {
+				name = L["Color"],
+				type = "color",
+				disabled = function() return (not addon.db.profile.modules.cast or not self.db.profile.spellText.enabled) end,
+				get = function(info) return self.db.profile.spellText.fontColor.r, self.db.profile.spellText.fontColor.g, self.db.profile.spellText.fontColor.b, self.db.profile.spellText.fontColor.a end,
+				set = function(info, r, g, b, a)
+							self.db.profile.spellText.fontColor = {r=r, g=g, b=b, a=a}
+							self:ApplyOptions()
+						end,
+				hasAlpha = true,
+				order = 36
 			},
 			misc = {
 				name = L["Miscellaneous"],
@@ -445,8 +488,9 @@ function module:ApplyOptions()
 		if self.db.profile.spellText then
 			local spellText = castFrame.spellText or castFrame:CreateFontString(nil, "OVERLAY")
 			spellText:ClearAllPoints()
-			spellText:SetPoint("BOTTOM", castFrame, "CENTER", 0, self.db.profile.radius + 5)
+			spellText:SetPoint("BOTTOM", castFrame, "CENTER", 0 + self.db.profile.spellText.relativeX, self.db.profile.radius + 5 + self.db.profile.spellText.relativeY)
 			spellText:SetFont(media:Fetch("font", self.db.profile.spellText.font), self.db.profile.spellText.fontSize)
+			spellText:SetTextColor(self.db.profile.spellText.fontColor.r, self.db.profile.spellText.fontColor.g, self.db.profile.spellText.fontColor.b, self.db.profile.spellText.fontColor.a)
 			spellText:Show()
 			castFrame.spellText = spellText
 		elseif castFrame.spellText then
