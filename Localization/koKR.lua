@@ -42,6 +42,8 @@ L["Radius"] = "반지름"
 L["Remove Spell"] = "주문 제거"
 L["Restore defaults"] = "기본값 복구"
 --[[Translation missing --]]
+L["Reverse channeling"] = "Reverse channeling"
+--[[Translation missing --]]
 L["Right Click"] = "Right Click"
 --[[Translation missing --]]
 L["Ring"] = "Ring"

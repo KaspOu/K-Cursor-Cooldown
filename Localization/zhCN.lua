@@ -36,6 +36,8 @@ L["Radius"] = "半径"
 L["Remove Spell"] = "移除法术"
 L["Restore defaults"] = "恢复默认设置"
 --[[Translation missing --]]
+L["Reverse channeling"] = "Reverse channeling"
+--[[Translation missing --]]
 L["Right Click"] = "Right Click"
 L["Ring"] = "环样式"
 L["Rotate"] = "旋转"

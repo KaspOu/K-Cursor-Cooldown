@@ -66,6 +66,8 @@ L["Remove Spell"] = "Remove Spell"
 --[[Translation missing --]]
 L["Restore defaults"] = "Restore defaults"
 --[[Translation missing --]]
+L["Reverse channeling"] = "Reverse channeling"
+--[[Translation missing --]]
 L["Right Click"] = "Right Click"
 --[[Translation missing --]]
 L["Ring"] = "Ring"

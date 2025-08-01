@@ -102,7 +102,8 @@ function addon:InitializeOptions()
 						set = function(info,val)
 								self.db.profile.attachToMouse = val
 							end,
-						order = 1
+						order = 1,
+						width = "double"
 					},
 					xOff = {
 						name = L["Horizontal Offset"],
@@ -244,7 +245,7 @@ function addon:OnInitialize()
 	optionTitle = optionTitle..devVer
 	--@end-do-not-package@
 	LibStub("AceConfig-3.0"):RegisterOptionsTable("CC", options)
-	ACD:SetDefaultSize("CC", 640, 480)
+	ACD:SetDefaultSize("CC", 640, 600)
 	ACD:AddToBlizOptions("CC", optionTitle)
 	self:RegisterChatCommand("gcd", self.OpenConfig)
 	self:RegisterChatCommand("cc", self.OpenConfig)
