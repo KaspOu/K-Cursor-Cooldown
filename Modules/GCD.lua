@@ -48,7 +48,7 @@ end
 
 function module:GetOptions()
   options = {
-    name = "CC",
+    name = "GCD",
     type = "group",
     args = {
       sparkOnly = {
