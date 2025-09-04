@@ -348,20 +348,6 @@ function module:SPELLS_CHANGED()
     end
   end
 
-  -- FIXME: Mists Classic BUG: SPELLS_CHANGED occurs too frequently for Monk: compare spells
-  if class == "MONK" and build < 60000 and #cdFrames == #renewCDFrames then
-    local spellsChanged = false
-    for i = 1, #cdFrames do
-      if cdFrames[i].spell ~= renewCDFrames[i].spell then
-        spellsChanged = true
-        break
-      end
-    end
-    if not spellsChanged then
-      return
-    end
-  end
-
   for _, v in ipairs(cdFrames) do
     if v.frame then FrameHandler:DeleteFrame(v.frame) end
   end
