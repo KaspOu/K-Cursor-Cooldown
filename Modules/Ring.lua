@@ -12,7 +12,7 @@ local showRequests
 local defaults = {
 	profile = {
 		color = {r=0, g=1, b=0, a=0.5},
-		texture = "SPELLS\\AuraRune1",
+		texture = "165624",
 		rotate = true,
 		width = 75
 	}
@@ -82,6 +82,9 @@ function module:OnInitialize()
 end
 
 function module:GetOptions()
+	local GetAddOnInfo = C_AddOns.GetAddOnInfo or GetAddOnInfo
+	local addonFolder = GetAddOnInfo("CursorCooldown")
+	addonFolder = "Interface\\AddOns\\"..addonFolder
 	options = {
 		name = L["Ring"],
 		type = "group",
@@ -101,32 +104,34 @@ function module:GetOptions()
 							self:ApplyOptions()
 						end,
 				values = {
-					["SPELLS\\AuraRune1"] 	= "AuraRune 1 (default)",
-					["165630"] 				= "AuraRune 1 glow",
-					["SPELLS\\AuraRune8"] 	= "AuraRune 8 (legacy)",
-					["SPELLS\\AuraRune5Green"] = "AuraRune 5",
-					["SPELLS\\AuraRune7"] 	= "AuraRune 7",
-					["SPELLS\\AuraRune9"] 	= "AuraRune 9",
-					["SPELLS\\AuraRune11"] 	= "AuraRune11",
-					["SPELLS\\AuraRune256b"] = "AuraRune 256",
-					["SPELLS\\AuraRune_A"] 	= "AuraRune A",
-					["SPELLS\\AuraRune_B"] 	= "AuraRune B",
-					["SPELLS\\AuraRune_C"] 	= "AuraRune C",
-					["SPELLS\\Circle"] 		= "Circle",
+					["165624"] 	= "AuraRune 1 (default)",
+					["165630"] 	= "AuraRune 1 glow",
+					["165635"] 	= "AuraRune 8 (legacy)",
+					[addonFolder.."\\Textures\\AuraSplit"] = "Aura - Split",
+					[addonFolder.."\\Textures\\AuraHalf"] = "Aura - Half",
+					["165633"] 	= "AuraRune 5",
+					["165634"] 	= "AuraRune 7",
+					["165631"] 	= "AuraRune 9",
+					["165638"] 	= "AuraRune A",
+					["165639"] 	= "AuraRune B",
+					["165640"] 	= "AuraRune C",
+					["165623"]	= "Halo",
+					["165632"] 	= "Circle",
 				},
 				sorting = {
-					"SPELLS\\AuraRune1",
+					"165624",
 					"165630",
-					"SPELLS\\AuraRune8",
-					"SPELLS\\AuraRune5Green",
-					"SPELLS\\AuraRune7",
-					"SPELLS\\AuraRune9",
-					"SPELLS\\AuraRune11",
-					"SPELLS\\AuraRune256b",
-					"SPELLS\\AuraRune_A",
-					"SPELLS\\AuraRune_B",
-					"SPELLS\\AuraRune_C",
-					"SPELLS\\Circle",
+					"165635",
+					addonFolder.."\\Textures\\AuraSplit",
+					addonFolder.."\\Textures\\AuraHalf",
+					"165633",
+					"165634",
+					"165631",
+					"165638",
+					"165639",
+					"165640",
+					"165623",
+					"165632",
 				},
 				order = 11
 			},
@@ -141,6 +146,20 @@ function module:GetOptions()
 						end,
 				order = 12
 			},
+			width = {
+			  name = L["Width"],
+			  type = "range",
+			  min = 40,
+			  max = 100,
+			  step = 5,
+			  disabled = function() return not addon.db.profile.modules.ring end,
+			  get = function(_) return self.db.profile.width end,
+			  set = function(_, val)
+				self.db.profile.width = val
+				self:ApplyOptions()
+			  end,
+			  order = 13
+			},
 			color = {
 				name = L["Color"],
 				type = "color",
@@ -153,27 +172,22 @@ function module:GetOptions()
 				hasAlpha = true,
 				order = 14
 			},
+			texturePreview = {
+				name = "",
+				type = "execute",
+				image = function() return self.db.profile.texture end,
+				imageWidth = 70,
+				imageHeight = 70,
+				disabled = true,
+				order = 15
+			},
 			rotate = {
 				name = L["Rotate"],
 				type = "toggle",
 				disabled = function() return not addon.db.profile.modules.ring end,
 				get = function(_) return self.db.profile.rotate end,
 				set = function(_, val) self.db.profile.rotate = val end,
-				order = 15
-			},
-			width = {
-			  name = L["Width"],
-			  type = "range",
-			  min = 40,
-			  max = 100,
-			  step = 5,
-			  disabled = function() return not addon.db.profile.modules.gcd end,
-			  get = function(_) return self.db.profile.width end,
-			  set = function(_, val)
-				self.db.profile.width = val
-				self:ApplyOptions()
-			  end,
-			  order = 13
+				order = 16
 			},
 			misc = {
 				name = L["Miscellaneous"],
