@@ -12,8 +12,9 @@ local showRequests
 local defaults = {
 	profile = {
 		color = {r=0, g=1, b=0, a=0.5},
-		texture = 165630, -- "Spells\\AURARUNE8",
-		rotate = false
+		texture = "SPELLS\\AuraRune1",
+		rotate = true,
+		width = 75
 	}
 }
 
@@ -47,11 +48,11 @@ function module:ApplyOptions()
 			ringFrame.texture.hAngle = 0;
 		end
 		local texture = ringFrame.texture
-		texture:SetTexture(self.db.profile.texture) -- Spells\\AURARUNE8
+		texture:SetTexture(string.gsub(self.db.profile.texture, "^%d+%-", ""))
 		texture:SetVertexColor(self.db.profile.color.r,self.db.profile.color.g,self.db.profile.color.b,self.db.profile.color.a) -- 0,1,0,0.5
 		texture:SetBlendMode('ADD')
-		texture:SetWidth(80)
-		texture:SetHeight(80)
+		texture:SetWidth(self.db.profile.width)
+		texture:SetHeight(self.db.profile.width)
 		texture:SetPoint('CENTER', ringFrame, 'CENTER')
 		texture:SetRotation(rad(texture.hAngle))
 		texture:Show()
@@ -92,34 +93,87 @@ function module:GetOptions()
 			},
 			texture = {
 				name = L["Texture"],
-				type = "input",
+				type = "select",
 				disabled = function() return not addon.db.profile.modules.ring end,
-				get = function(info) return self.db.profile.texture end,
-				set = function(info, val)
+				get = function() return self.db.profile.texture end,
+				set = function(_, val)
 							self.db.profile.texture = val
 							self:ApplyOptions()
 						end,
+				values = {
+					["SPELLS\\AuraRune1"] 	= "AuraRune 1 (default)",
+					["165630"] 				= "AuraRune 1 glow",
+					["SPELLS\\AuraRune8"] 	= "AuraRune 8 (legacy)",
+					["SPELLS\\AuraRune5Green"] = "AuraRune 5",
+					["SPELLS\\AuraRune7"] 	= "AuraRune 7",
+					["SPELLS\\AuraRune9"] 	= "AuraRune 9",
+					["SPELLS\\AuraRune11"] 	= "AuraRune11",
+					["SPELLS\\AuraRune256b"] = "AuraRune 256",
+					["SPELLS\\AuraRune_A"] 	= "AuraRune A",
+					["SPELLS\\AuraRune_B"] 	= "AuraRune B",
+					["SPELLS\\AuraRune_C"] 	= "AuraRune C",
+					["SPELLS\\Circle"] 		= "Circle",
+				},
+				sorting = {
+					"SPELLS\\AuraRune1",
+					"165630",
+					"SPELLS\\AuraRune8",
+					"SPELLS\\AuraRune5Green",
+					"SPELLS\\AuraRune7",
+					"SPELLS\\AuraRune9",
+					"SPELLS\\AuraRune11",
+					"SPELLS\\AuraRune256b",
+					"SPELLS\\AuraRune_A",
+					"SPELLS\\AuraRune_B",
+					"SPELLS\\AuraRune_C",
+					"SPELLS\\Circle",
+				},
 				order = 11
+			},
+			texture2 = {
+				name = "",
+				type = "input",
+				disabled = function() return not addon.db.profile.modules.ring end,
+				get = function(_) return self.db.profile.texture end,
+				set = function(_, val)
+							self.db.profile.texture = val
+							self:ApplyOptions()
+						end,
+				order = 12
 			},
 			color = {
 				name = L["Color"],
 				type = "color",
 				disabled = function() return not addon.db.profile.modules.ring end,
-				get = function(info) return self.db.profile.color.r, self.db.profile.color.g, self.db.profile.color.b, self.db.profile.color.a end,
-				set = function(info, r, g, b, a)
+				get = function(_) return self.db.profile.color.r, self.db.profile.color.g, self.db.profile.color.b, self.db.profile.color.a end,
+				set = function(_, r, g, b, a)
 							self.db.profile.color = {r=r, g=g, b=b, a=a}
 							self:ApplyOptions()
 						end,
 				hasAlpha = true,
-				order = 12
+				order = 14
 			},
 			rotate = {
 				name = L["Rotate"],
 				type = "toggle",
 				disabled = function() return not addon.db.profile.modules.ring end,
-				get = function(info) return self.db.profile.rotate end,
-				set = function(info, val) self.db.profile.rotate = val end,
-				order = 13
+				get = function(_) return self.db.profile.rotate end,
+				set = function(_, val) self.db.profile.rotate = val end,
+				order = 15
+			},
+			width = {
+			  name = L["Width"],
+			  type = "range",
+			  min = 40,
+			  max = 100,
+			  step = 5,
+			  disabled = function() return not addon.db.profile.modules.gcd end,
+			  get = function(_) return self.db.profile.width end,
+			  set = function(_, val)
+				self.db.profile.width = val
+				self:ApplyOptions()
+			  end,
+			  order = 13
 			},
 			misc = {
 				name = L["Miscellaneous"],

@@ -54,6 +54,8 @@ L["to lock the cooldown bar and save its position"] = "to lock the cooldown bar 
 L["Thickness"] = "粗細"
 L["Unlock"] = "解鎖"
 L["Vertical Offset"] = "垂直位移"
+--[[Translation missing --]]
+L["Width"] = "Width"
 L["x-Offset"] = "水平位置"
 L["y-Offset"] = "垂直位置"
 

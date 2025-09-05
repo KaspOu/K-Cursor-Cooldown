@@ -50,6 +50,7 @@ L["Thickness"] = "Épaisseur"
 L["to lock the cooldown bar and save its position"] = "pour verrouiller le cercle et enregistrer sa position"
 L["Unlock"] = "Déverrouiller"
 L["Vertical Offset"] = "Décalage vertical"
+L["Width"] = "Largeur"
 L["x-Offset"] = "Position horizontale"
 L["y-Offset"] = "Position verticale"
 
