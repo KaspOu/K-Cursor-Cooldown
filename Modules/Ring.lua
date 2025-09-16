@@ -186,7 +186,11 @@ function module:GetOptions()
 				type = "toggle",
 				disabled = function() return not addon.db.profile.modules.ring end,
 				get = function(_) return self.db.profile.rotate end,
-				set = function(_, val) self.db.profile.rotate = val end,
+				set = function(_, val)
+						self.db.profile.rotate = val
+						ringFrame.texture.hAngle = 0
+						self:ApplyOptions()
+					end,
 				order = 16
 			},
 			misc = {
