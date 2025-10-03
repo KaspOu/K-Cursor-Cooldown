@@ -1,15 +1,31 @@
 ## Interface: 110200, 110205, 50500, 50501, 11507
 ## Title: Cursor Cooldown Reloaded by |cff00ff00Kallye|r
+## Title-deDE: Cursor Cooldown Reloaded von |cff00ff00Kallye|r
+## Title-esES: Cursor Cooldown Reloaded por |cff00ff00Kallye|r
+## Title-esMX: Cursor Cooldown Reloaded por |cff00ff00Kallye|r
 ## Title-frFR: Cursor Cooldown Reloaded, par |cff00ff00Kallye|r
+## Title-itIT: Cursor Cooldown Reloaded da |cff00ff00Kallye|r
+## Title-koKR: Cursor Cooldown Reloaded 제작: |cff00ff00Kallye|r
+## Title-ruRU: Cursor Cooldown Reloaded от |cff00ff00Kallye|r
+## Title-zhCN: Cursor Cooldown Reloaded 作者: |cff00ff00Kallye|r
+## Title-zhTW: Cursor Cooldown Reloaded 作者: |cff00ff00Kallye|r
 ## Notes: Display the global cooldown around your cursor. (+ other stuff)
+## Notes-deDE: Zeigt den globalen Cooldown um deinen Cursor an. (+ weitere Dinge)
+## Notes-esES: Muestra el tiempo de reutilización global alrededor de tu cursor. (+ otras cosas)
+## Notes-esMX: Muestra el tiempo de reutilización global alrededor de tu cursor. (+ otras cosas)
 ## Notes-frFR: Affiche le cooldown global autour du curseur (+ autres cd).
+## Notes-itIT: Mostra il tempo di ricarica globale attorno al tuo cursore. (+ altro)
+## Notes-koKR: 전역 재사용 대기시간을 커서 주위에 표시합니다. (+ 기타 기능)
+## Notes-ruRU: Отображает глобальный кулдаун вокруг вашего курсора. (+ другие вещи)
+## Notes-zhCN: 在您的光标周围显示全局冷却时间。 (+ 其他功能)
+## Notes-zhTW: 在您的光標周圍顯示全局冷卻時間。 (+ 其他功能)
 ## Author: |cff00ff00Kallye|r (EU-Elune)
 ## Version: 11.2.003
 ## OptionalDeps: Ace3, LibStub, LibSharedMedia-3.0
 ## X-Embeds: Ace3, LibStub, LibSharedMedia-3.0
 
 ## X-Category: Interface Enhancement
-## X-Localizations: enUS, frFR, ruRU, deDE, esES, esMX, koKR, zhCN, zhTW
+## X-Localizations: enUS, frFR, ruRU, deDE, esES, esMX, itIT, koKR, zhCN, zhTW
 ## X-License: GPL v3
 ## X-Credits: TimothyLuke, Nymbia, Nevcairiel (copied parts of Quartz), and original authors bakahar, Finghin and Sancty
 ## SavedVariables: CursorCooldownDB
@@ -23,10 +39,11 @@ embeds.xml
 #@end-no-lib-strip@
 
 Localization\enUS.lua
+Localization\frFR.lua
 Localization\deDE.lua
 Localization\esES.lua
 Localization\esMX.lua
-Localization\frFR.lua
+Localization\itIT.lua
 Localization\koKR.lua
 Localization\ruRU.lua
 Localization\zhCN.lua
