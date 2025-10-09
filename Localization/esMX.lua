@@ -8,8 +8,7 @@ L["Attach to cursor"] = "Adjuntar al cursor"
 L["Auto arrange icons"] = "Organizar iconos automáticamente"
 L["Background"] = "Fondo"
 L["Bar"] = "Barra"
---[[Translation chatGPT --]]
-L["Bar position saved!"] = "¡Posición de la barra guardada!"
+L["Bar position saved!"] = "¡Posición de la barra guardada!" -- ChatGPT
 L["Border"] = "Borde"
 L["Bottom"] = "Parte inferior"
 L["Bottom has to be a number!"] = "La parte inferior debe ser un número"
@@ -34,10 +33,8 @@ L["Primary"] = "Primario"
 L["Radius"] = "Radio"
 L["Remove Spell"] = "Eliminar hechizo"
 L["Restore defaults"] = "Restaurar valores predeterminados"
---[[Translation chatGPT --]]
-L["Reverse channeling"] = "Canalización inversa"
---[[Translation chatGPT --]]
-L["Right Click"] = "Clic derecho"
+L["Reverse channeling"] = "Canalización inversa" -- ChatGPT
+L["Right Click"] = "Clic derecho" -- ChatGPT
 L["Ring"] = "Anillo"
 L["Rotate"] = "Rotar"
 L["Secondary"] = "Secundario"
@@ -49,12 +46,10 @@ L["Spells"] = "Hechizos"
 L["Talent Specs"] = "Especializaciones de talentos"
 L["Text"] = "Texto"
 L["Texture"] = "Textura"
---[[Translation chatGPT --]]
-L["to lock the cooldown bar and save its position"] = "para bloquear la barra de reutilización y guardar su posición"
+L["to lock the cooldown bar and save its position"] = "para bloquear la barra de reutilización y guardar su posición" -- ChatGPT
 L["Thickness"] = "Grosor"
 L["Unlock"] = "Desbloquear"
 L["Vertical Offset"] = "Desplazamiento vertical"
---[[Translation chatGPT --]]
-L["Width"] = "Ancho"
+L["Width"] = "Ancho" -- ChatGPT
 L["x-Offset"] = "Desplazamiento en X"
 L["y-Offset"] = "Desplazamiento en Y"

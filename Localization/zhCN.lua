@@ -8,8 +8,7 @@ L["Attach to cursor"] = "吸附到光标"
 L["Auto arrange icons"] = "自动排列图标"
 L["Background"] = "背景"
 L["Bar"] = "条"
---[[Translation chatGPT --]]
-L["Bar position saved!"] = "能量条位置已保存！"
+L["Bar position saved!"] = "能量条位置已保存！" -- ChatGPT
 L["Border"] = "边框"
 L["Bottom"] = "底部"
 L["Bottom has to be a number!"] = "底部应当是一个数字!"
@@ -23,8 +22,7 @@ L["Font"] = "字体"
 L["Font Size"] = "字体大小"
 L["General"] = "综合"
 L["Hide default castbar"] = "隐藏默认施法条"
---[[Translation chatGPT --]]
-L["Horizontal Offset"] = "水平偏移"
+L["Horizontal Offset"] = "水平偏移" -- ChatGPT
 L["Icon size"] = "图标大小"
 L["Latency color"] = "延迟颜色"
 L["Left"] = "左"
@@ -35,10 +33,8 @@ L["Primary"] = "首要"
 L["Radius"] = "半径"
 L["Remove Spell"] = "移除法术"
 L["Restore defaults"] = "恢复默认设置"
---[[Translation chatGPT --]]
-L["Reverse channeling"] = "反向引导"
---[[Translation chatGPT --]]
-L["Right Click"] = "右键点击"
+L["Reverse channeling"] = "反向引导" -- ChatGPT
+L["Right Click"] = "右键点击" -- ChatGPT
 L["Ring"] = "环样式"
 L["Rotate"] = "旋转"
 L["Secondary"] = "次要"
@@ -50,14 +46,10 @@ L["Spells"] = "法术"
 L["Talent Specs"] = "双天赋"
 L["Text"] = "文字"
 L["Texture"] = "材质"
---[[Translation chatGPT --]]
-L["to lock the cooldown bar and save its position"] = "锁定冷却条并保存其位置"
---[[Translation chatGPT --]]
-L["Thickness"] = "粗细"
+L["to lock the cooldown bar and save its position"] = "锁定冷却条并保存其位置" -- ChatGPT
+L["Thickness"] = "粗细" -- ChatGPT
 L["Unlock"] = "解锁"
---[[Translation chatGPT --]]
-L["Vertical Offset"] = "垂直偏移"
---[[Translation chatGPT --]]
-L["Width"] = "宽度"
+L["Vertical Offset"] = "垂直偏移" -- ChatGPT
+L["Width"] = "宽度" -- ChatGPT
 L["x-Offset"] = "x-坐标"
 L["y-Offset"] = "y-坐标"

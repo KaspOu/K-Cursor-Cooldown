@@ -20,7 +20,7 @@
 ## Notes-zhCN: 在您的光标周围显示全局冷却时间。 (+ 其他功能)
 ## Notes-zhTW: 在您的光標周圍顯示全局冷卻時間。 (+ 其他功能)
 ## Author: |cff00ff00Kallye|r (EU-Elune)
-## Version: 11.2.003
+## Version: 11.2.501
 ## OptionalDeps: Ace3, LibStub, LibSharedMedia-3.0
 ## X-Embeds: Ace3, LibStub, LibSharedMedia-3.0
 

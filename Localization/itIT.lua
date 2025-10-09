@@ -1,6 +1,6 @@
 local L = LibStub("AceLocale-3.0"):NewLocale("CC", "itIT")
 if not L then return end
-
+-- ChatGPT
 L["Add Spell"] = "Aggiungi Incantesimo"
 L["All specified colors are vertex colors! (see wowwiki.com)"] = "Tutti i colori specificati sono colori vertice! (vedi wowwiki.com)"
 L["All unlockable modules are disabled!"] = "Tutti i moduli sbloccabili sono disabilitati!"

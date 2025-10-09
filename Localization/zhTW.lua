@@ -8,8 +8,7 @@ L["Attach to cursor"] = "跟隨滑鼠游標"
 L["Auto arrange icons"] = "自動排列圖示"
 L["Background"] = "背景"
 L["Bar"] = "條"
---[[Translation chatGPT --]]
-L["Bar position saved!"] = "能量條位置已儲存！"
+L["Bar position saved!"] = "能量條位置已儲存！" -- ChatGPT
 L["Border"] = "外框"
 L["Bottom"] = "下方"
 L["Bottom has to be a number!"] = "下方必須是數字!"
@@ -34,10 +33,8 @@ L["Primary"] = "主要"
 L["Radius"] = "半徑"
 L["Remove Spell"] = "移除法術"
 L["Restore defaults"] = "恢復為預設值"
---[[Translation chatGPT --]]
-L["Reverse channeling"] = "反向引導"
---[[Translation chatGPT --]]
-L["Right Click"] = "右鍵點擊"
+L["Reverse channeling"] = "反向引導" -- ChatGPT
+L["Right Click"] = "右鍵點擊" -- ChatGPT
 L["Ring"] = "圓圈圖形"
 L["Rotate"] = "旋轉"
 L["Secondary"] = "次要"
@@ -49,13 +46,10 @@ L["Spells"] = "法術"
 L["Talent Specs"] = "天賦專精"
 L["Text"] = "文字"
 L["Texture"] = "材質"
---[[Translation chatGPT --]]
-L["to lock the cooldown bar and save its position"] = "鎖定冷卻條並儲存其位置"
+L["to lock the cooldown bar and save its position"] = "鎖定冷卻條並儲存其位置" -- ChatGPT
 L["Thickness"] = "粗細"
 L["Unlock"] = "解鎖"
 L["Vertical Offset"] = "垂直位移"
---[[Translation chatGPT --]]
-L["Width"] = "寬度"
+L["Width"] = "寬度" -- ChatGPT
 L["x-Offset"] = "水平位置"
 L["y-Offset"] = "垂直位置"
-

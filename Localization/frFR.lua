@@ -53,4 +53,3 @@ L["Vertical Offset"] = "Décalage vertical"
 L["Width"] = "Largeur"
 L["x-Offset"] = "Position horizontale"
 L["y-Offset"] = "Position verticale"
-

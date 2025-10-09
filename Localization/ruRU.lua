@@ -8,8 +8,7 @@ L["Attach to cursor"] = "Прикрепить к курсору"
 L["Auto arrange icons"] = "Автоматически упорядочивать иконки"
 L["Background"] = "Фон"
 L["Bar"] = "Полоса"
---[[Translation chatGPT --]]
-L["Bar position saved!"] = "Позиция полосы сохранена!"
+L["Bar position saved!"] = "Позиция полосы сохранена!" -- ChatGPT
 L["Border"] = "Граница"
 L["Bottom"] = "Низ"
 L["Bottom has to be a number!"] = "Внизу должно быть число!"
@@ -34,10 +33,8 @@ L["Primary"] = "Основной"
 L["Radius"] = "Радиус"
 L["Remove Spell"] = "Удалить заклинание"
 L["Restore defaults"] = "Восстановить по умолчанию"
---[[Translation chatGPT --]]
-L["Reverse channeling"] = "Обратное ченнелинг"
---[[Translation chatGPT --]]
-L["Right Click"] = "Правый клик"
+L["Reverse channeling"] = "Обратное ченнелинг" -- ChatGPT
+L["Right Click"] = "Правый клик" -- ChatGPT
 L["Ring"] = "Кольцо"
 L["Rotate"] = "Вращать"
 L["Secondary"] = "Вторичный"
@@ -49,12 +46,10 @@ L["Spells"] = "Заклинания"
 L["Talent Specs"] = "Специализации талантов"
 L["Text"] = "Текст"
 L["Texture"] = "Текстура"
---[[Translation chatGPT --]]
-L["to lock the cooldown bar and save its position"] = "чтобы заблокировать полосу перезарядки и сохранить ее позицию"
+L["to lock the cooldown bar and save its position"] = "чтобы заблокировать полосу перезарядки и сохранить ее позицию" -- ChatGPT
 L["Thickness"] = "Толщина"
 L["Unlock"] = "Разблокировать"
 L["Vertical Offset"] = "Вертикальное смещение"
---[[Translation chatGPT --]]
-L["Width"] = "Ширина"
+L["Width"] = "Ширина" -- ChatGPT
 L["x-Offset"] = "Смещение по X"
 L["y-Offset"] = "Смещение по Y"
