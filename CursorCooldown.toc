@@ -16,6 +16,7 @@
 ## Notes-frFR: Affiche le cooldown global autour du curseur (+ autres cd).
 ## Notes-itIT: Mostra il tempo di ricarica globale attorno al tuo cursore. (+ altro)
 ## Notes-koKR: 전역 재사용 대기시간을 커서 주위에 표시합니다. (+ 기타 기능)
+## Notes-ptBR: Exibe o tempo de recarga global ao redor do seu cursor. (+ outras coisas)
 ## Notes-ruRU: Отображает глобальный кулдаун вокруг вашего курсора. (+ другие вещи)
 ## Notes-zhCN: 在您的光标周围显示全局冷却时间。 (+ 其他功能)
 ## Notes-zhTW: 在您的光標周圍顯示全局冷卻時間。 (+ 其他功能)
@@ -25,7 +26,7 @@
 ## X-Embeds: Ace3, LibStub, LibSharedMedia-3.0
 
 ## X-Category: Interface Enhancement
-## X-Localizations: enUS, frFR, ruRU, deDE, esES, esMX, itIT, koKR, zhCN, zhTW
+## X-Localizations: enUS, frFR, ruRU, deDE, esES, esMX, itIT, koKR, ptBR, zhCN, zhTW
 ## X-License: GPL v3
 ## X-Credits: TimothyLuke, Nymbia, Nevcairiel (copied parts of Quartz), and original authors bakahar, Finghin and Sancty
 ## SavedVariables: CursorCooldownDB
@@ -45,6 +46,7 @@ Localization\esES.lua
 Localization\esMX.lua
 Localization\itIT.lua
 Localization\koKR.lua
+Localization\ptBR.lua
 Localization\ruRU.lua
 Localization\zhCN.lua
 Localization\zhTW.lua
