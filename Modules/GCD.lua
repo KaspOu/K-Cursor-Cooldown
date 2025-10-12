@@ -80,7 +80,7 @@ function module:GetOptions()
         name = L["Thickness"],
         type = "range",
         min = 15,
-        max = 25,
+        max = 35,
         step = 5,
         disabled = function() return not addon.db.profile.modules.gcd end,
         get = function(info) return self.db.profile.thickness end,
