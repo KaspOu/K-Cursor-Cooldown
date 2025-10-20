@@ -27,6 +27,7 @@ L["Icon size"] = "아이콘 크기" -- ChatGPT
 L["Latency color"] = "지연 색상"
 L["Left"] = "왼쪽"
 L["Left has to be a number!"] = "왼쪽은 숫자여야 합니다!" -- ChatGPT
+L["Midnight: GCD is not available in combat"] = "Midnight: 전투 중에는 GCD를 사용할 수 없습니다"
 L["Miscellaneous"] = "기타"
 L["Position"] = "위치"
 L["Primary"] = "기본" -- ChatGPT

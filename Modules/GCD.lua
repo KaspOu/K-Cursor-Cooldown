@@ -47,10 +47,28 @@ function module:OnInitialize()
 end
 
 function module:GetOptions()
+  if not C_Spell.DoesSpellExist(61304) then
+    options = {
+      name = "|cffff2020GCD - disabled -|r",
+      type = "group",
+      dialogHidden = true,
+      guiHidden = true,
+      args = {
+      }
+    }
+    addon.db.profile.modules.gcd = false
+    return options
+  end
   options = {
     name = "GCD",
     type = "group",
     args = {
+      description = {
+        name = "|TInterface\\DialogFrame\\UI-Dialog-Icon-AlertNew:18|t|cffff2020 " .. L["Midnight: GCD is not available in combat"] .. "|r\n ",
+        type = "description",
+        order = 1,
+        width = "full",
+      },
       sparkOnly = {
         name = L["Show spark only"],
         type = "toggle",
@@ -60,7 +78,7 @@ function module:GetOptions()
           self.db.profile.sparkOnly = val
           self:ApplyOptions()
         end,
-        order = 1
+        order = 2
       },
       radius = {
         name = L["Radius"],
@@ -74,7 +92,7 @@ function module:GetOptions()
           self.db.profile.radius = val
           self:ApplyOptions()
         end,
-        order = 2
+        order = 3
       },
       thickness = {
         name = L["Thickness"],
@@ -88,7 +106,7 @@ function module:GetOptions()
           self.db.profile.thickness = val
           self:ApplyOptions()
         end,
-        order = 3
+        order = 4
       },
       colors = {
         name = L["Colors"],

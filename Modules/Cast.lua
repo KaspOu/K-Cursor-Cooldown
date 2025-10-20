@@ -10,7 +10,6 @@ local castFrame
 local options
 local ringMod
 
-local blizzardCastingBarFrame = PlayerCastingBarFrame or CastingBarFrame
 
 local defaults = {
 	profile = {
@@ -252,28 +251,28 @@ function module:GetOptions()
 				set = function(info,val)
 						self.db.profile.hideCastBar = val
 						if val then
-							blizzardCastingBarFrame:UnregisterAllEvents()
-							blizzardCastingBarFrame:Hide()
+							addon.BlizzardCastingBarFrame:UnregisterAllEvents()
+							addon.BlizzardCastingBarFrame:Hide()
 						else
-							blizzardCastingBarFrame:UnregisterAllEvents()
-							blizzardCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_START")
-							blizzardCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_STOP")
-							blizzardCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_FAILED")
-							blizzardCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
-							blizzardCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_DELAYED")
-							blizzardCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START")
-							blizzardCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_STOP")
-							blizzardCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_UPDATE")
+							addon.BlizzardCastingBarFrame:UnregisterAllEvents()
+							addon.BlizzardCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_START")
+							addon.BlizzardCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_STOP")
+							addon.BlizzardCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_FAILED")
+							addon.BlizzardCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
+							addon.BlizzardCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_DELAYED")
+							addon.BlizzardCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START")
+							addon.BlizzardCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_STOP")
+							addon.BlizzardCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_UPDATE")
 
-							blizzardCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_SENT")
+							addon.BlizzardCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_SENT")
 							if RAID_CLASS_COLORS.EVOKER ~= nil then
-								blizzardCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_START")
-								blizzardCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_STOP")
-								blizzardCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_UPDATE")
+								addon.BlizzardCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_START")
+								addon.BlizzardCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_STOP")
+								addon.BlizzardCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_UPDATE")
 							end
-							blizzardCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_INTERRUPTIBLE")
-							blizzardCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
-							blizzardCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
+							addon.BlizzardCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_INTERRUPTIBLE")
+							addon.BlizzardCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
+							addon.BlizzardCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
 						end
 					end,
 				order = 42,
@@ -294,21 +293,36 @@ function module:GetOptions()
 	return options
 end
 
+function module:RegisterUnitEvent(event, unit)
+	AceAddon30Frame:RegisterUnitEvent(event, unit)
+	if (not AceAddon30Frame._RegisterUnitEvents) then
+		AceAddon30Frame._RegisterUnitEvents = true
+		AceAddon30Frame:SetScript("OnEvent", function(self, event, unit, ...)
+			if type(module[event]) == "function" then
+				module[event](module, event, unit, ...)
+			end
+		end)
+	end
+end
+
 function module:OnEnable()
 	self:ApplyOptions()
 	self:RegisterEvent("UNIT_SPELLCAST_SENT")
-	self:RegisterEvent("UNIT_SPELLCAST_START")
-	self:RegisterEvent("UNIT_SPELLCAST_STOP")
-	self:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
-	self:RegisterEvent("UNIT_SPELLCAST_FAILED")
-	self:RegisterEvent("UNIT_SPELLCAST_DELAYED")
-	self:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START")
-	self:RegisterEvent("UNIT_SPELLCAST_CHANNEL_STOP")
-	self:RegisterEvent("UNIT_SPELLCAST_CHANNEL_UPDATE")
+	self:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player")
+	self:RegisterUnitEvent("UNIT_SPELLCAST_START", "player")
+	self:RegisterUnitEvent("UNIT_SPELLCAST_STOP", "player")
+	self:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", "player")
+	self:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", "player")
+	-- UNIT_SPELLCAST_FAILED_QUIET
+	-- UNIT_SPELLCAST_SUCCEEDED
+	self:RegisterUnitEvent("UNIT_SPELLCAST_DELAYED", "player")
+	self:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", "player")
+	self:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", "player")
+	self:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_UPDATE", "player")
 	if RAID_CLASS_COLORS.EVOKER ~= nil then
-		self:RegisterEvent("UNIT_SPELLCAST_EMPOWER_START")
-		self:RegisterEvent("UNIT_SPELLCAST_EMPOWER_STOP")
-		self:RegisterEvent("UNIT_SPELLCAST_EMPOWER_UPDATE")
+		self:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_START", "player")
+		self:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_STOP", "player")
+		self:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_UPDATE", "player")
 	end
 end
 
@@ -345,10 +359,10 @@ function module:Hide(hideGcd)
 end
 
 local function OnUpdate(self, elapsed)
-	local castPerc = (1000 * GetTime() - castStartTime) / castDuration
+	local castPerc = castDuration == 0 and 0 or ((1000 * GetTime() - castStartTime) / castDuration)
 	if castDuration ~= 0 and castPerc < 1 then
 		local angle = castPerc * 360
-		if (module.db.profile.reverseChanneling and blizzardCastingBarFrame.channeling) then
+		if (module.db.profile.reverseChanneling and addon.BlizzardCastingBarFrame.channeling) then
 			angle = (1 - castPerc) * 360
 		end
 		if not module.db.profile.sparkOnly then
@@ -374,65 +388,83 @@ local function OnUpdate(self, elapsed)
 end
 
 function module:UNIT_SPELLCAST_SENT(_, unit)
-	if unit ~= 'player' then return end
+	-- if not UnitIsPlayer(unit) then return end
+	if (addon.isSecret(unit) or unit ~= "player") then return end
 	castSent = GetTime() * 1000
+end
+function module:UNIT_SPELLCAST_SUCCEEDED(evt, unit)
+	self:UNIT_SPELLCAST_SENT(evt, unit)
 end
 
 function module:UNIT_SPELLCAST_START(_, unit, action)
-	if unit ~= 'player' then return end
+	-- if not UnitIsPlayer(unit) then return end
 	local text, spell
 	spell, text, _, castStartTime, castEndTime, _, _, _, _ = UnitCastingInfo(unit)
 	local sendLag = (castSent and castSent > 0) and GetTime() * 1000 - castSent or 0
-	castDuration = castEndTime and castEndTime - castStartTime or 0
-	sendLag = sendLag > castDuration and castDuration or sendLag
-	castLatency = sendLag / castDuration
+	if not addon.isSecret(castEndTime) then
+		castDuration = castEndTime and castEndTime - castStartTime or 0
+		sendLag = sendLag > castDuration and castDuration or sendLag
+		castLatency = castDuration == 0 and 0 or sendLag / castDuration
+	else
+		castDuration = 1000
+		sendLag = 0
+		castLatency = 0
+	end
 
 	if castFrame.spellText then
-		castFrame.spellText:SetText(text or spell)
+		if (type(text) ~= "nil") then
+			castFrame.spellText:SetText(text)
+		else
+			castFrame.spellText:SetText(spell)
+		end
 	end
 	self:Show()
 end
 
 function module:UNIT_SPELLCAST_STOP(_, unit)
-	if unit ~= 'player' then return end
+	-- if not UnitIsPlayer(unit) then return end
 	self:Hide(true)
 end
 
 function module:UNIT_SPELLCAST_FAILED(_, unit)
-	if unit ~= 'player' then return end
+	-- if not UnitIsPlayer(unit) then return end
 	self:Hide(true)
 end
 
 function module:UNIT_SPELLCAST_INTERRUPTED(_, unit)
-	if unit ~= 'player' then return end
+	-- if not UnitIsPlayer(unit) then return end
 	self:Hide()
 end
 
 function module:UNIT_SPELLCAST_DELAYED(_, unit)
-	if unit ~= 'player' then return end
+	-- if not UnitIsPlayer(unit) then return end
 	_, _, _, _, castStartTime, castEndTime = UnitCastingInfo(unit)
 	castDuration = castEndTime and castEndTime - castStartTime or 0
 end
 
 function module:UNIT_SPELLCAST_CHANNEL_START(_,unit)
-	if unit ~= 'player' then return end
+	-- if not UnitIsPlayer(unit) then return end
 	local text, spell
 	spell, text, _, castStartTime, castEndTime = UnitChannelInfo(unit)
 	local sendLag = (castSent and castSent > 0) and GetTime() * 1000 - castSent or 0
 	castDuration = castEndTime and castEndTime - castStartTime or 0
 	sendLag = sendLag > castDuration and castDuration or sendLag
 	castLatency = sendLag / castDuration
-	castFrame.spellText:SetText(text or spell)
+	if (type(text) ~= "nil") then
+		castFrame.spellText:SetText(text)
+	else
+		castFrame.spellText:SetText(spell)
+	end
 	self:Show()
 end
 
 function module:UNIT_SPELLCAST_CHANNEL_STOP(_,unit)
-	if unit ~= 'player' then return end
+	-- if not UnitIsPlayer(unit) then return end
 	self:Hide(true)
 end
 
 function module:UNIT_SPELLCAST_CHANNEL_UPDATE(_,unit)
-	if unit ~= 'player' then return end
+	-- if not UnitIsPlayer(unit) then return end
 	_, _, _, castStartTime, castEndTime = UnitChannelInfo(unit)
 	castDuration = castEndTime - castStartTime
 end
@@ -451,6 +483,7 @@ function module:ApplyOptions()
 	local anchor = addon.anchor
 	if self:IsEnabled() then
 		if not castFrame then
+			-- FIXME: Duplicate frame for Midnight?
 			castFrame = CreateFrame("Frame")
 			castFrame:SetParent(anchor)
 			castFrame:SetAllPoints()
@@ -517,8 +550,8 @@ function module:ApplyOptions()
 		end
 
 		if self.db.profile.hideCastBar then
-			blizzardCastingBarFrame:UnregisterAllEvents()
-			blizzardCastingBarFrame:Hide()
+			addon.BlizzardCastingBarFrame:UnregisterAllEvents()
+			addon.BlizzardCastingBarFrame:Hide()
 		end
 
 		castFrame:SetScript('OnUpdate', OnUpdate)

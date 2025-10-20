@@ -359,6 +359,16 @@ function addon:Unlock()
 	end
 end
 
+addon.BlizzardCastingBarFrame = PlayerCastingBarFrame or CastingBarFrame
+function addon.isSecret(value)
+	if issecretvalue then
+		return issecretvalue(value)
+	end
+	if issecrettable and type(value) == "table" then
+		return issecrettable(value)
+	end
+	return false
+end
 local GetAddOnInfo = C_AddOns.GetAddOnInfo or GetAddOnInfo
 local addonFolder = GetAddOnInfo("CursorCooldown")
 addon.addonFolder = "Interface\\AddOns\\"..addonFolder

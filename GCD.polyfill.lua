@@ -9,6 +9,9 @@ addon.BOOKTYPE_PET = BOOKTYPE_PET or Enum.SpellBookSpellBank.Pet;
 addon.GetSpellCooldown = GetSpellCooldown or function(spellID)
   local spellCooldownInfo = C_Spell.GetSpellCooldown(spellID);
   if spellCooldownInfo then
+    if addon.isSecret(spellCooldownInfo.startTime) then
+      return 0, 1, true, 1
+    end
     return spellCooldownInfo.startTime, spellCooldownInfo.duration, spellCooldownInfo.isEnabled, spellCooldownInfo.modRate;
   end
 end
@@ -19,6 +22,9 @@ addon.GetSpellInfo = GetSpellInfo or function(spellID)
   end
 
   local spellInfo = C_Spell.GetSpellInfo(spellID);
+  if addon.isSecret(spellInfo) then
+    return "Secret", nil, 136085, 1249, 0, 45, 8936, 136085
+  end
   if spellInfo then
     return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange, spellInfo.spellID, spellInfo.originalIconID;
   end
@@ -45,3 +51,12 @@ addon.GetSpellBookItemName = GetSpellBookItemName or function(index, bookType)
   return C_SpellBook.GetSpellBookItemName(index, spellBank);
 end
 
+--[[
+addon.Enum_SpellBookSpellBank_Pet = (Enum and Enum.SpellBookSpellBank and Enum.SpellBookSpellBank.Pet) or 1
+addon.Enum_SpellBookSpellBank_Player = (Enum and Enum.SpellBookSpellBank and Enum.SpellBookSpellBank.Player) or 0
+addon.IsSpellInSpellBook = C_SpellBook.IsSpellInSpellBook or function (spellID, spellBank)
+  -- legit, can't coexist with C_SpellBook.IsSpellInSpellBook
+  return IsSpellKnownOrOverridesKnown(spellID, spellBank == ns.Enum_SpellBookSpellBank_Pet and true or nil)
+end
+addon.IsSpellKnownOrInSpellBook = C_SpellBook.IsSpellKnownOrInSpellBook or addon.IsSpellInSpellBook
+--]]
