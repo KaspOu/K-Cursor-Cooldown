@@ -8,6 +8,9 @@ addon.BOOKTYPE_PET = BOOKTYPE_PET or Enum.SpellBookSpellBank.Pet;
 
 addon.GetSpellCooldown = GetSpellCooldown or function(spellID)
   local spellCooldownInfo = C_Spell.GetSpellCooldown(spellID);
+  if addon.isSecret(spellCooldownInfo) then
+    return 0, 1, true, 1
+  end
   if spellCooldownInfo then
     return spellCooldownInfo.startTime, spellCooldownInfo.duration, spellCooldownInfo.isEnabled, spellCooldownInfo.modRate;
   end
@@ -19,6 +22,9 @@ addon.GetSpellInfo = GetSpellInfo or function(spellID)
   end
 
   local spellInfo = C_Spell.GetSpellInfo(spellID);
+  if addon.isSecret(spellInfo) then
+    return "Secret", nil, 136085, 1249, 0, 45, 8936, 136085
+  end
   if spellInfo then
     return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange, spellInfo.spellID, spellInfo.originalIconID;
   end
@@ -45,3 +51,7 @@ addon.GetSpellBookItemName = GetSpellBookItemName or function(index, bookType)
   return C_SpellBook.GetSpellBookItemName(index, spellBank);
 end
 
+addon.UnitCastingInfo = not issecretvalue and UnitCastingInfo or function(unit)
+-- return "spell", "text", _, castStartTime, castEndTime, _, _, _, _
+  return "spell", "text", _, 1000, 2000, _, _, _, _
+end
