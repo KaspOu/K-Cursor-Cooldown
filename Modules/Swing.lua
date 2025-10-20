@@ -32,6 +32,18 @@ local defaults = {
 	}
 }
 
+function module:RegisterUnitEvent(event, unit)
+	AceAddon30Frame:RegisterUnitEvent(event, unit)
+	if (not AceAddon30Frame._RegisterUnitEvents) then
+		AceAddon30Frame._RegisterUnitEvents = true
+		AceAddon30Frame:SetScript("OnEvent", function(self, event, unit, ...)
+			if type(module[event]) == "function" then
+				module[event](module, event, unit, ...)
+			end
+		end)
+	end
+end
+
 function module:OnEnable()
 	self:ApplyOptions()
 	self:RegisterEvent("PLAYER_ENTER_COMBAT")
@@ -40,14 +52,14 @@ function module:OnEnable()
 	self:RegisterEvent("START_AUTOREPEAT_SPELL")
 	self:RegisterEvent("STOP_AUTOREPEAT_SPELL")
 
-	self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
+	self:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player")
 
 	if playerClass == "WARRIOR" then
-		self:RegisterEvent("UNIT_SPELLCAST_START")
-		self:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
+		self:RegisterUnitEvent("UNIT_SPELLCAST_START", "player")
+		self:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", "player")
 	end
 
-	self:RegisterEvent("UNIT_ATTACK")
+	self:RegisterUnitEvent("UNIT_ATTACK", "player")
 end
 
 function module:OnDisable()
@@ -242,7 +254,8 @@ function module:STOP_AUTOREPEAT_SPELL()
 end
 
 function module:UNIT_SPELLCAST_SUCCEEDED(event, unit, spell)
-	if unit ~= "player" or not swingMode then return end
+	-- if not UnitIsPlayer(unit) or
+	if not swingMode then return end
 	-- TODO: EVOKER Bar support
 	if swingMode == 1 then
 		if spell == slam and slamStart then
@@ -257,13 +270,15 @@ function module:UNIT_SPELLCAST_SUCCEEDED(event, unit, spell)
 end
 
 function module:UNIT_SPELLCAST_INTERRUPTED(event, unit, spell)
-	if unit == "player" and spell == slam and slamStart then
+	-- if UnitIsPlayer(unit) and
+	if spell == slam and slamStart then
 		slamStart = nil
 	end
 end
 
 function module:UNIT_SPELLCAST_START(event, unit, spell)
-	if unit == "player" and spell == slam then
+	-- if UnitIsPlayer(unit) and
+	if spell == slam then
 		slamStart = GetTime()
 	end
 end
@@ -279,7 +294,8 @@ function module:COMBAT_LOG_EVENT_UNFILTERED(event, timestamp, combatevent, srcGU
 end
 
 function module:UNIT_ATTACK(event, unit)
-	if unit == "player" and swingMode then
+	-- if UnitIsPlayer(unit) and
+	if swingMode then
 		if swingMode == 1 then
 			duration = UnitAttackSpeed("player")
 		elseif swingMode == 2 then
