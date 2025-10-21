@@ -83,8 +83,6 @@ end
 
 function module:GetOptions()
 	local GetAddOnInfo = C_AddOns.GetAddOnInfo or GetAddOnInfo
-	local addonFolder = GetAddOnInfo("CursorCooldown")
-	addonFolder = "Interface\\AddOns\\"..addonFolder
 	options = {
 		name = L["Ring"],
 		type = "group",
@@ -107,8 +105,8 @@ function module:GetOptions()
 					["165624"] 	= "AuraRune 1 (default)",
 					["165630"] 	= "AuraRune 1 glow",
 					["165635"] 	= "AuraRune 8 (legacy)",
-					[addonFolder.."\\Textures\\AuraSplit"] = "Aura - Split",
-					[addonFolder.."\\Textures\\AuraHalf"] = "Aura - Half",
+					[addon.addonFolder.."\\Textures\\AuraSplit"] = "Aura - Split",
+					[addon.addonFolder.."\\Textures\\AuraHalf"] = "Aura - Half",
 					["165633"] 	= "AuraRune 5",
 					["165634"] 	= "AuraRune 7",
 					["165631"] 	= "AuraRune 9",
@@ -122,8 +120,8 @@ function module:GetOptions()
 					"165624",
 					"165630",
 					"165635",
-					addonFolder.."\\Textures\\AuraSplit",
-					addonFolder.."\\Textures\\AuraHalf",
+					addon.addonFolder.."\\Textures\\AuraSplit",
+					addon.addonFolder.."\\Textures\\AuraHalf",
 					"165633",
 					"165634",
 					"165631",
