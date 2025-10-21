@@ -358,3 +358,7 @@ function addon:Unlock()
 		return L["All unlockable modules are disabled!"]
 	end
 end
+
+local GetAddOnInfo = C_AddOns.GetAddOnInfo or GetAddOnInfo
+local addonFolder = GetAddOnInfo("CursorCooldown")
+addon.addonFolder = "Interface\\AddOns\\"..addonFolder
