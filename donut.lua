@@ -97,15 +97,11 @@ function addon.donut:New(direction, radius, thickness, color, bgColor, frame)
 		local IR = OR - self.thickness
 		local TS = 256
 
-		if degree < 0 then
-			degree = 0
-		elseif degree > 360 then
-			degree = 360
-		end
+		degree = math.max(0, math.min(degree, 360))
 
 		local quarter = ceil(degree / 90)
-		degree = degree - (quarter - 1) * 90
-		local radian = rad(degree)
+		local quarterDegree = degree - (quarter - 1) * 90
+		local radian = rad(quarterDegree)
 		local Ix = math.sin(radian) * IR;
 		local Iy = TS - math.cos(radian) * IR;
 		local Ox = math.sin(radian) * OR;
@@ -121,7 +117,23 @@ function addon.donut:New(direction, radius, thickness, color, bgColor, frame)
 		Ox = OxCoord * radius
 		Oy = OyCoord * radius
 
-		local red, blue, slice, s1, s2, s3, frame = self.red, self.blue, self.slice, self.segment1, self.segment2, self.segment3, self.frame
+		local red, blue, slice, s1, s2, s3, frame, needle = self.red, self.blue, self.slice, self.segment1, self.segment2, self.segment3, self.frame, self.needle
+
+		local needleRotationPoint = {x=.5, y=0}
+		if needle then
+			-- FIXME: Since Midnight (12)
+			-- if C_CurveUtil then
+			-- 	local curve = C_CurveUtil.CreateColorCurve();
+			-- 	curve:SetType(Enum.LuaCurveType.Step);
+			-- 	curve:AddPoint(0, degree);
+			-- 	curve:AddPoint(360, degree);
+			-- end
+			if self.direction then
+				needle:SetRotation(-rad(degree), needleRotationPoint)
+			else
+				needle:SetRotation(rad(degree), needleRotationPoint)
+			end
+		end
 
 		red:ClearAllPoints()
 		blue:ClearAllPoints()
@@ -273,9 +285,11 @@ function addon.donut:New(direction, radius, thickness, color, bgColor, frame)
 			end
 		end
 
-		if degree == 90 or degree == 0 then
+		if quarterDegree == 90 or quarterDegree == 0 then
+			needle:Hide()
 			slice:Hide()
 		else
+			needle:Show()
 			slice:Show()
 		end
 	end
@@ -342,6 +356,16 @@ function addon.donut:New(direction, radius, thickness, color, bgColor, frame)
 	donut.blue = donutFrame:CreateTexture(nil, 'ARTWORK')
 	-----------------------------------------------------------------------------------------------------------
 
+	----------------------------------------------Needle-----------------------------------------------------
+	-- Needle part: thickness pixels wide, radius pixels long, rotates like a clock hand.
+	donut.needle = donutFrame:CreateTexture(nil, 'ARTWORK')
+	donut.needle:SetTexture(addon.addonFolder.."\\Textures\\2d")
+	donut.needle:SetPoint("BOTTOM", donutFrame, "CENTER")
+	donut.needle:SetWidth(3)
+	donut.needle:SetHeight(radius)
+	donut.needle:SetVertexColor(color.r, color.g, color.b, color.a)
+	-----------------------------------------------------------------------------------------------------------
+
 	donut:SetThickness(thickness)
 	donut:SetDirection(direction)
 	donut:SetRadius(radius)
@@ -355,6 +379,7 @@ function addon.donut:New(direction, radius, thickness, color, bgColor, frame)
 	donut.slice:Show()
 	donut.red:Show()
 	donut.blue:Show()
+	donut.needle:Show()
 
 	return donut
 end
