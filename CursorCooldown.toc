@@ -1,4 +1,4 @@
-## Interface: 110200, 110205, 50500, 50501, 11507
+## Interface: 110205, 50501, 11508
 ## Title: Cursor Cooldown Reloaded by |cff00ff00Kallye|r
 ## Title-deDE: Cursor Cooldown Reloaded von |cff00ff00Kallye|r
 ## Title-esES: Cursor Cooldown Reloaded por |cff00ff00Kallye|r
@@ -21,7 +21,7 @@
 ## Notes-zhCN: 在您的光标周围显示全局冷却时间。 (+ 其他功能)
 ## Notes-zhTW: 在您的光標周圍顯示全局冷卻時間。 (+ 其他功能)
 ## Author: |cff00ff00Kallye|r (EU-Elune)
-## Version: 11.2.501
+## Version: 11.2.502
 ## OptionalDeps: Ace3, LibStub, LibSharedMedia-3.0
 ## X-Embeds: Ace3, LibStub, LibSharedMedia-3.0
 
@@ -29,6 +29,7 @@
 ## X-Localizations: enUS, frFR, ruRU, deDE, esES, esMX, itIT, koKR, ptBR, zhCN, zhTW
 ## X-License: GPL v3
 ## X-Credits: TimothyLuke, Nymbia, Nevcairiel (copied parts of Quartz), and original authors bakahar, Finghin and Sancty
+## LoadSavedVariablesFirst: 1
 ## SavedVariables: CursorCooldownDB
 ## IconTexture: Interface\Icons\INV_Artifact_DimensionalRift
 
@@ -40,16 +41,16 @@ embeds.xml
 #@end-no-lib-strip@
 
 Localization\enUS.lua
-Localization\frFR.lua
-Localization\deDE.lua
-Localization\esES.lua
-Localization\esMX.lua
-Localization\itIT.lua
-Localization\koKR.lua
-Localization\ptBR.lua
-Localization\ruRU.lua
-Localization\zhCN.lua
-Localization\zhTW.lua
+Localization\frFR.lua [AllowLoadTextLocale frFR]
+Localization\deDE.lua [AllowLoadTextLocale deDE]
+Localization\esES.lua [AllowLoadTextLocale esES]
+Localization\esMX.lua [AllowLoadTextLocale esMX]
+Localization\itIT.lua [AllowLoadTextLocale itIT]
+Localization\koKR.lua [AllowLoadTextLocale koKR]
+Localization\ptBR.lua [AllowLoadTextLocale ptBR]
+Localization\ruRU.lua [AllowLoadTextLocale ruRU]
+Localization\zhCN.lua [AllowLoadTextLocale zhCN]
+Localization\zhTW.lua [AllowLoadTextLocale zhTW]
 
 GCD.lua
 GCD.polyfill.lua
