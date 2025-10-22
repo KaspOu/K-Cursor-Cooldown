@@ -8,6 +8,9 @@ addon.BOOKTYPE_PET = BOOKTYPE_PET or Enum.SpellBookSpellBank.Pet;
 
 addon.GetSpellCooldown = GetSpellCooldown or function(spellID)
   local spellCooldownInfo = C_Spell.GetSpellCooldown(spellID);
+  if addon.isSecret(spellCooldownInfo) then
+    return 0, 1, true, 1
+  end
   if spellCooldownInfo then
     if addon.isSecret(spellCooldownInfo.startTime) then
       return 0, 1, true, 1
@@ -50,13 +53,3 @@ addon.GetSpellBookItemName = GetSpellBookItemName or function(index, bookType)
   local spellBank = (bookType == addon.BOOKTYPE_SPELL) and Enum.SpellBookSpellBank.Player or Enum.SpellBookSpellBank.Pet;
   return C_SpellBook.GetSpellBookItemName(index, spellBank);
 end
-
---[[
-addon.Enum_SpellBookSpellBank_Pet = (Enum and Enum.SpellBookSpellBank and Enum.SpellBookSpellBank.Pet) or 1
-addon.Enum_SpellBookSpellBank_Player = (Enum and Enum.SpellBookSpellBank and Enum.SpellBookSpellBank.Player) or 0
-addon.IsSpellInSpellBook = C_SpellBook.IsSpellInSpellBook or function (spellID, spellBank)
-  -- legit, can't coexist with C_SpellBook.IsSpellInSpellBook
-  return IsSpellKnownOrOverridesKnown(spellID, spellBank == ns.Enum_SpellBookSpellBank_Pet and true or nil)
-end
-addon.IsSpellKnownOrInSpellBook = C_SpellBook.IsSpellKnownOrInSpellBook or addon.IsSpellInSpellBook
---]]

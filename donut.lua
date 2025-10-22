@@ -1,15 +1,29 @@
 --[[
 	Most of the functionality was taken from Circle Cast 2. Credits go to Greg Flynn (Nuckin)
+	Rewritten to use a single UICooldown frame for radial fill, as suggested,
+	leveraging WoW's built-in CooldownFrameTemplate for a more optimized approach.
 ]]
 
 local addon = LibStub("AceAddon-3.0"):GetAddon("CC")
 addon.donut = {}
 
-local rad, sin, cos = math.rad, math.sin, math.cos
+local rad = math.rad -- Only math.rad is needed for handle rotation
 
-function addon.donut:New(direction, radius, thickness, color, bgColor, frame)
+function addon.donut:New(direction, radius, thickness, color, bgColor, frame, hasHand)
+	assert(type(direction) == "boolean", "direction must be a boolean")
+	assert(type(radius) == "number" and radius > 0, "radius must be a positive number")
+	assert(type(thickness) == "number" and thickness > 0, "thickness must be a positive number")
+	assert(type(color) == "table" and type(color.r) == "number" and type(color.g) == "number" and type(color.b) == "number" and type(color.a) == "number", "color must be a table with r, g, b, a number components")
+	assert(type(bgColor) == "table" and type(bgColor.r) == "number" and type(bgColor.g) == "number" and type(bgColor.b) == "number" and type(bgColor.a) == "number", "bgColor must be a table with r, g, b, a number components")
+	assert(frame == nil or type(frame) == "table", "frame must be nil or a table (UI frame), found:"..type(frame))
+	assert(hasHand == nil or type(hasHand) == "boolean", "hasHand must be nil or a boolean, found:"..type(hasHand))
 	local donut = {}
-	----------------------------------------------Function--------------------------------------------------
+	donut.radius = radius
+	donut.thickness = thickness
+	donut.direction = direction
+	donut.hasHand = hasHand
+
+	----------------------------------------------Functions--------------------------------------------------
 	function donut:AttachTo(anchor)
 		self.bgFrame:SetParent(anchor)
 		self.bgFrame:SetAllPoints(anchor)
@@ -17,369 +31,157 @@ function addon.donut:New(direction, radius, thickness, color, bgColor, frame)
 
 	function donut:SetRadius(radius)
 		self.radius = radius
-		for _,v in ipairs(self.background) do
-			v:SetWidth(radius)
-			v:SetHeight(radius)
+		local size = radius * 2
+		self.backgroundTexture:SetSize(size, size)
+		self.cooldown:SetSize(size, size)
+		-- The inner background creates the "hole" of the donut
+		self.innerBackgroundTexture:SetSize((radius - self.thickness) * 2, (radius - self.thickness) * 2)
+		if self.handle then
+			self.handle:SetHeight(radius)
 		end
-
-		local s1, s2, s3 = self.segment1, self.segment2, self.segment3
-		s1:SetWidth(radius)
-		s1:SetHeight(radius)
-		s2:SetWidth(radius)
-		s2:SetHeight(radius)
-		s3:SetWidth(radius)
-		s3:SetHeight(radius)
 	end
 
 	function donut:SetThickness(thickness)
 		self.thickness = thickness
-		for _,v in ipairs(self.background) do
-			v:SetTexture(addon.addonFolder.."\\Textures\\segment_" .. thickness)
-		end
-
-		self.segment1:SetTexture(addon.addonFolder.."\\Textures\\segment_" .. thickness)
-		self.segment2:SetTexture(addon.addonFolder.."\\Textures\\segment_" .. thickness)
-		self.segment3:SetTexture(addon.addonFolder.."\\Textures\\segment_" .. thickness)
-
-		self.red:SetTexture(addon.addonFolder.."\\Textures\\segment_" .. thickness)
-		self.blue:SetTexture(addon.addonFolder.."\\Textures\\segment_" .. thickness)
+		-- Adjust the size of the inner background to change the donut's thickness
+		self.innerBackgroundTexture:SetSize((self.radius - thickness) * 2, (self.radius - thickness) * 2)
 	end
 
 	function donut:SetDirection(direction)
 		self.direction = direction
-		local texture
-		local donutFrame = self.frame
-		-- 1. Quarter
-		texture = self.segment1
-		if direction then
-			texture:SetPoint("BOTTOMLEFT", donutFrame, "CENTER")
-		else
-			texture:SetPoint("BOTTOMRIGHT", donutFrame, "CENTER")
-			texture:SetTexCoord(1, 0, 1, 1, 0, 0, 0, 1);
-		end
-		-- 2. Quarter
-		texture = self.segment2
-		if direction then
-			texture:SetPoint("TOPLEFT", donutFrame, "CENTER")
-			texture:SetTexCoord(0, 1, 1, 1, 0, 0, 1, 0);
-		else
-			texture:SetPoint("TOPRIGHT", donutFrame, "CENTER")
-			texture:SetTexCoord(1, 1, 1, 0, 0, 1, 0, 0);
-		end
-		-- 3. Quarter
-		texture = self.segment3
-		if direction then
-			texture:SetPoint("TOPRIGHT", donutFrame, "CENTER")
-			texture:SetTexCoord(1, 1, 1, 0, 0, 1, 0, 0);
-		else
-			texture:SetPoint("TOPLEFT", donutFrame, "CENTER")
-			texture:SetTexCoord(0, 1, 1, 1, 0, 0, 1, 0);
-		end
+		-- If direction is true, the circle should empty (reverse fill)
+		self.cooldown:SetReverse(direction)
 	end
 
 	function donut:SetBarColor(color)
-		self.red:SetVertexColor(color.r, color.g, color.b, color.a)
-		self.blue:SetVertexColor(color.r, color.g, color.b, color.a)
-		self.slice:SetVertexColor(color.r, color.g, color.b, color.a)
-		self.segment1:SetVertexColor(color.r, color.g, color.b, color.a)
-		self.segment2:SetVertexColor(color.r, color.g, color.b, color.a)
-		self.segment3:SetVertexColor(color.r, color.g, color.b, color.a)
+		-- Set the color of the radial swipe fill. The last 'color.a' ensures the swipe is opaque.
+		self.cooldown:SetSwipeColor(color.r, color.g, color.b, color.a, color.a)
+		if self.handle then
+			self.handle:SetVertexColor(color.r, color.g, color.b, color.a)
+		end
 	end
 
 	function donut:SetBackgroundColor(color)
-		for _,v in ipairs(self.background) do
-			v:SetVertexColor(color.r, color.g, color.b, color.a)
+		-- Set the color of the static background and the inner hole
+		self.backgroundTexture:SetVertexColor(color.r, color.g, color.b, color.a)
+		self.innerBackgroundTexture:SetVertexColor(color.r, color.g, color.b, color.a)
+	end
+
+	-- New primary method for setting cooldown progress using standard WoW API
+	-- `start` and `duration` are standard Cooldown frame parameters.
+	-- `enable` can be used to explicitly show/hide the cooldown.
+	function donut:SetCooldown(start, duration, enable)
+		if enable == false or duration == 0 then
+			self.cooldown:Hide()
+			if self.handle then self.handle:Hide() end
+		else
+			self.cooldown:Show()
+			if self.handle then self.handle:Show() end
+			self.cooldown:SetCooldown(start, duration)
+
+			-- Update handle rotation based on current progress
+			local elapsed = GetTime() - start
+			local progress = math.min(1, math.max(0, elapsed / duration))
+			local degree = progress * 360
+
+			if self.handle then
+				-- Rotate around the bottom center of the handle texture (0.5, 0)
+				local rotationVector = { x=.5, y = 0}
+				if self.direction then -- If direction is true, it's depleting, so rotate inversely
+					self.handle:SetRotation(-rad(degree), rotationVector)
+				else
+					self.handle:SetRotation(rad(degree), rotationVector)
+				end
+			end
 		end
 	end
 
+	-- Retain SetAngle for compatibility, adapting it to the new system.
+	-- This will simulate a cooldown based on a degree (0-360).
 	function donut:SetAngle(degree)
-		local OR = 256
-		local IR = OR - self.thickness
-		local TS = 256
-
 		degree = math.max(0, math.min(degree, 360))
-
-		local quarter = ceil(degree / 90)
-		local quarterDegree = degree - (quarter - 1) * 90
-		local radian = rad(quarterDegree)
-		local Ix = math.sin(radian) * IR;
-		local Iy = TS - math.cos(radian) * IR;
-		local Ox = math.sin(radian) * OR;
-		local Oy = TS - math.cos(radian) * OR;
-		local IxCoord = Ix / TS;
-		local IyCoord = Iy / TS;
-		local OxCoord = Ox / TS;
-		local OyCoord = Oy / TS;
-
-		local radius = self.radius
-		Ix = IxCoord * radius
-		Iy = IyCoord * radius
-		Ox = OxCoord * radius
-		Oy = OyCoord * radius
-
-		local red, blue, slice, s1, s2, s3, frame, needle = self.red, self.blue, self.slice, self.segment1, self.segment2, self.segment3, self.frame, self.needle
-
-		local needleRotationPoint = {x=.5, y=0}
-		if needle then
-			-- FIXME: Since Midnight (12)
-			-- if C_CurveUtil then
-			-- 	local curve = C_CurveUtil.CreateColorCurve();
-			-- 	curve:SetType(Enum.LuaCurveType.Step);
-			-- 	curve:AddPoint(0, degree);
-			-- 	curve:AddPoint(360, degree);
-			-- end
-			if self.direction then
-				needle:SetRotation(-rad(degree), needleRotationPoint)
-			else
-				needle:SetRotation(rad(degree), needleRotationPoint)
-			end
-		end
-
-		red:ClearAllPoints()
-		blue:ClearAllPoints()
-		slice:ClearAllPoints()
-
-		if quarter == 1 then
-			s1:Hide();
-			s2:Hide();
-			s3:Hide();
-
-			if self.direction then
-				red:SetTexCoord(0, IxCoord, 0, IyCoord);
-				red:SetPoint("TOPLEFT", frame, "CENTER", 0, radius);
-				red:SetWidth(Ix);
-				red:SetHeight(Iy);
-
-				blue:SetTexCoord(IxCoord, OxCoord, 0, OyCoord);
-				blue:SetPoint("TOPLEFT", frame, "CENTER", Ix, radius);
-				blue:SetWidth(Ox - Ix);
-				blue:SetHeight(Oy);
-
-				slice:SetTexCoord(0, 0, 0, 1, 1, 0, 1, 1);
-				slice:SetPoint("TOPLEFT", frame, "CENTER", Ix, radius - Oy);
-				slice:SetWidth(Ox - Ix);
-				slice:SetHeight(Iy - Oy);
-			else
-				red:SetTexCoord(IxCoord, 0, IxCoord, IyCoord, 0, 0, 0, IyCoord);
-				red:SetPoint("TOPRIGHT", frame, "CENTER", 0, radius);
-				red:SetWidth(Ix);
-				red:SetHeight(Iy);
-
-				blue:SetTexCoord(OxCoord, 0, OxCoord, OyCoord, IxCoord, 0, IxCoord, OyCoord);
-				blue:SetPoint("TOPRIGHT", frame, "CENTER", -Ix, radius);
-				blue:SetWidth(Ox - Ix);
-				blue:SetHeight(Oy);
-
-				slice:SetTexCoord(1, 0, 1, 1, 0, 0, 0, 1);
-				slice:SetPoint("TOPRIGHT", frame, "CENTER", -Ix, radius - Oy);
-				slice:SetWidth(Ox - Ix);
-				slice:SetHeight(Iy - Oy);
-			end
-		elseif quarter == 2 then
-			s1:Show();
-			s2:Hide();
-			s3:Hide();
-
-			if self.direction then
-				red:SetTexCoord(0, IyCoord, IxCoord, IyCoord, 0, 0, IxCoord, 0);
-				red:SetPoint("TOPRIGHT", frame, "CENTER", radius, 0);
-				red:SetWidth(Iy);
-				red:SetHeight(Ix);
-
-				blue:SetTexCoord(IxCoord, OyCoord, OxCoord, OyCoord, IxCoord, 0, OxCoord, 0);
-				blue:SetPoint("TOPRIGHT", frame, "CENTER", radius, -Ix);
-				blue:SetWidth(Oy);
-				blue:SetHeight(Ox - Ix);
-
-				slice:SetTexCoord(0, 1, 1, 1, 0, 0, 1, 0);
-				slice:SetPoint("TOPRIGHT", frame, "CENTER", radius - Oy, -Ix);
-				slice:SetWidth(Iy - Oy);
-				slice:SetHeight(Ox - Ix);
-			else --l,t,r,t,l,b,r,b
-				red:SetTexCoord(0, 0, IxCoord, 0, 0, IyCoord, IxCoord, IyCoord);
-				red:SetPoint("TOPLEFT", frame, "CENTER", -radius, 0);
-				red:SetWidth(Iy);
-				red:SetHeight(Ix);
-
-				blue:SetTexCoord(IxCoord, 0, OxCoord, 0, IxCoord, OyCoord, OxCoord, OyCoord);
-				blue:SetPoint("TOPLEFT", frame, "CENTER", -radius, -Ix);
-				blue:SetWidth(Oy);
-				blue:SetHeight(Ox - Ix);
-
-				slice:SetTexCoord(0, 0, 1, 0, 0, 1, 1, 1);
-				slice:SetPoint("TOPLEFT", frame, "CENTER", -radius + Oy, -Ix);
-				slice:SetWidth(Iy - Oy);
-				slice:SetHeight(Ox - Ix);
-			end
-		elseif quarter == 3 then
-			s1:Show();
-			s2:Show();
-			s3:Hide();
-
-			if self.direction then
-				red:SetTexCoord(IxCoord, IyCoord, IxCoord, 0, 0, IyCoord, 0, 0);
-				red:SetPoint("BOTTOMRIGHT", frame, "CENTER", 0, -radius);
-				red:SetWidth(Ix);
-				red:SetHeight(Iy);
-
-				blue:SetTexCoord(OxCoord, OyCoord, OxCoord, 0, IxCoord, OyCoord, IxCoord, 0);
-				blue:SetPoint("BOTTOMRIGHT", frame, "CENTER", -Ix, -radius);
-				blue:SetWidth(Ox - Ix);
-				blue:SetHeight(Oy);
-
-				slice:SetTexCoord(1, 1, 1, 0, 0, 1, 0, 0);
-				slice:SetPoint("BOTTOMRIGHT", frame, "CENTER", -Ix, -radius + Oy);
-				slice:SetWidth(Ox - Ix);
-				slice:SetHeight(Iy - Oy);
-			else
-				red:SetTexCoord(0, IyCoord, 0, 0, IxCoord, IyCoord, IxCoord, 0);
-				red:SetPoint("BOTTOMLEFT", frame, "CENTER", 0, -radius);
-				red:SetWidth(Ix);
-				red:SetHeight(Iy);
-
-				blue:SetTexCoord(IxCoord, OyCoord, IxCoord, 0, OxCoord, OyCoord, OxCoord, 0);
-				blue:SetPoint("BOTTOMLEFT", frame, "CENTER", Ix, -radius);
-				blue:SetWidth(Ox - Ix);
-				blue:SetHeight(Oy);
-
-				slice:SetTexCoord(0, 1, 0, 0, 1, 1, 1, 0);
-				slice:SetPoint("BOTTOMLEFT", frame, "CENTER", Ix, -radius + Oy);
-				slice:SetWidth(Ox - Ix);
-				slice:SetHeight(Iy - Oy);
-			end
-		elseif quarter == 4 then
-			s1:Show();
-			s2:Show();
-			s3:Show();
-
-			if self.direction then
-				red:SetTexCoord(IxCoord, 0, 0, 0, IxCoord, IyCoord, 0, IyCoord);
-				red:SetPoint("BOTTOMLEFT", frame, "CENTER", -radius, 0);
-				red:SetWidth(Iy);
-				red:SetHeight(Ix);
-
-				blue:SetTexCoord(OxCoord, 0, IxCoord, 0, OxCoord, OyCoord, IxCoord, OyCoord);
-				blue:SetPoint("BOTTOMLEFT", frame, "CENTER", -radius, Ix);
-				blue:SetWidth(Oy);
-				blue:SetHeight(Ox - Ix);
-
-				slice:SetTexCoord(1, 0, 0, 0, 1, 1, 0, 1);
-				slice:SetPoint("BOTTOMLEFT", frame, "CENTER", -radius + Oy, Ix);
-				slice:SetWidth(Iy - Oy);
-				slice:SetHeight(Ox - Ix);
-			else --r,b,l,b,r,t,l,t
-				red:SetTexCoord(IxCoord, IyCoord, 0, IyCoord, IxCoord, 0, 0, 0);
-				red:SetPoint("BOTTOMRIGHT", frame, "CENTER", radius, 0);
-				red:SetWidth(Iy);
-				red:SetHeight(Ix);
-
-				blue:SetTexCoord(OxCoord, OyCoord, IxCoord, OyCoord, OxCoord, 0, IxCoord, 0);
-				blue:SetPoint("BOTTOMRIGHT", frame, "CENTER", radius, Ix);
-				blue:SetWidth(Oy);
-				blue:SetHeight(Ox - Ix);
-
-				slice:SetTexCoord(1, 1, 0, 1, 1, 0, 0, 0);
-				slice:SetPoint("BOTTOMRIGHT", frame, "CENTER", radius - Oy, Ix);
-				slice:SetWidth(Iy - Oy);
-				slice:SetHeight(Ox - Ix);
-			end
-		end
-
-		if quarterDegree == 90 or quarterDegree == 0 then
-			needle:Hide()
-			slice:Hide()
-		else
-			needle:Show()
-			slice:Show()
-		end
+		local progress = degree / 360
+		local simulatedDuration = 1 -- Use a fixed duration for angle-based setting
+		local simulatedStart = GetTime() - (progress * simulatedDuration)
+		self:SetCooldown(simulatedStart, simulatedDuration, true)
 	end
 
 	function donut:Show()
 		self.bgFrame:Show()
+		self.backgroundTexture:Show()
+		self.cooldown:Show()
+		self.innerBackgroundTexture:Show()
+		if self.handle then self.handle:Show() end
 	end
 
 	function donut:Hide()
 		self.bgFrame:Hide()
-		self:SetAngle(0)
+		self:SetCooldown(0, 0, false) -- Reset and hide cooldown
 	end
 	-----------------------------------------------------------------------------------------------------------
 
 	----------------------------------------------Frames----------------------------------------------------
 	local bgFrame = frame or CreateFrame("Frame")
 	donut.bgFrame = bgFrame
-	local donutFrame = CreateFrame("Frame")
+	local donutFrame = CreateFrame("Frame") -- Main frame for all donut elements
 	donut.frame = donutFrame
 	donutFrame:SetParent(bgFrame)
 	donutFrame:SetAllPoints(bgFrame)
 	-----------------------------------------------------------------------------------------------------------
 
 	----------------------------------------------Background----------------------------------------------
-	donut.background = {}
-	-- 1. Quarter
-	local texture = bgFrame:CreateTexture(nil, 'BACKGROUND')
-	texture:SetPoint("BOTTOMLEFT", bgFrame, "CENTER")
-	tinsert(donut.background, texture)
-	-- 2. Quarter
-	texture = bgFrame:CreateTexture(nil, 'BACKGROUND')
-	texture:SetTexCoord(0, 1, 1, 1, 0, 0, 1, 0);
-	texture:SetPoint("TOPLEFT", bgFrame, "CENTER")
-	tinsert(donut.background, texture)
-	-- 3. Quarter
-	texture = bgFrame:CreateTexture(nil, 'BACKGROUND')
-	texture:SetTexCoord(1, 1, 1, 0, 0, 1, 0, 0);
-	texture:SetPoint("TOPRIGHT", bgFrame, "CENTER")
-	tinsert(donut.background, texture)
-	-- 4. Quarter
-	texture = bgFrame:CreateTexture(nil, 'BACKGROUND')
-	texture:SetTexCoord(1, 0, 1, 1, 0, 0, 0, 1);
-	texture:SetPoint("BOTTOMRIGHT", bgFrame, "CENTER")
-	tinsert(donut.background, texture)
+	-- Full circle background, representing the full extent of the donut
+	donut.backgroundTexture = donutFrame:CreateTexture(nil, 'BACKGROUND')
+	donut.backgroundTexture:SetTexture(addon.addonFolder.."\\Textures\\ping4.PNG") -- A solid circular texture
+	donut.backgroundTexture:SetAllPoints(donutFrame)
+	donut.backgroundTexture:SetVertexColor(bgColor.r, bgColor.g, bgColor.b, bgColor.a)
 	-----------------------------------------------------------------------------------------------------------
 
-	----------------------------------------------Segments-------------------------------------------------
-	-- 1. Quarter
-	donut.segment1 = donutFrame:CreateTexture(nil, 'ARTWORK')
-	-- 2. Quarter
-	donut.segment2 = donutFrame:CreateTexture(nil, 'ARTWORK')
-	-- 3. Quarter
-	donut.segment3 = donutFrame:CreateTexture(nil, 'ARTWORK')
+	----------------------------------------------Cooldown (Radial Fill)-----------------------------------
+	-- This is the core element for the radial fill effect
+	donut.cooldown = CreateFrame("Cooldown", nil, donutFrame, "CooldownFrameTemplate")
+	donut.cooldown:SetAllPoints(donutFrame)
+	donut.cooldown:SetDrawBling(false)
+	donut.cooldown:SetDrawEdge(false)
+	-- donut.cooldown:SetEdgeTexture(addon.addonFolder.."\\Textures\\ping4.PNG", color.r, color.g, color.b, color.a)
+	donut.cooldown:SetUseCircularEdge(true)
+	donut.cooldown:SetDrawSwipe(true) -- Enable the radial fill animation
+	donut.cooldown:SetSwipeTexture(addon.addonFolder.."\\Textures\\ping4.PNG", color.r, color.g, color.b, color.a)
+
+	donut.cooldown:SetHideCountdownNumbers(false)
+	donut.cooldown:SetReverse(false)
+
+
+	----------------------------------------------Inner Background (Donut Hole)----------------------------
+	-- This texture is placed on top of the cooldown and background to create the transparent center,
+	-- effectively making the full circle cooldown appear as a donut.
+	donut.innerBackgroundTexture = donutFrame:CreateTexture(nil, 'OVERLAY')
+	-- donut.innerBackgroundTexture:SetTexture(addon.addonFolder.."\\Textures\\ping4.PNG") -- A solid circular texture, used as the base for the ring color
+	-- -- To create a "donut hole" effect, a mask texture is applied to shape the solid circular texture into a ring.
+	-- -- This assumes a 'RingMask.PNG' texture exists, which is transparent in the center and opaque on the outside.
+	-- -- donut.innerBackgroundTexture:SetMask(addon.addonFolder.."\\Textures\\ping4.PNG")
+	-- donut.innerBackgroundTexture:SetPoint("CENTER", donutFrame, "CENTER")
+	-- donut.innerBackgroundTexture:SetVertexColor(bgColor.r, bgColor.g, bgColor.b, bgColor.a)
 	-----------------------------------------------------------------------------------------------------------
 
-	----------------------------------------------Parts------------------------------------------------------
-	-- slice
-	texture = donutFrame:CreateTexture(nil, 'ARTWORK')
-	texture:SetTexture(addon.addonFolder.."\\Textures\\slice")
-	donut.slice = texture
-	-- Red part
-	donut.red = donutFrame:CreateTexture(nil, 'ARTWORK')
-	-- Blue part
-	donut.blue = donutFrame:CreateTexture(nil, 'ARTWORK')
+	----------------------------------------------Hand-----------------------------------------------------
+	-- Hand part: thickness pixels wide, radius pixels long, rotates like a clock hand.
+	if (donut.hasHand) then
+		donut.handle = donutFrame:CreateTexture(nil, 'OVERLAY')
+		donut.handle:SetTexture(addon.addonFolder.."\\Textures\\2d") -- Assuming this is a line texture
+		donut.handle:SetPoint("BOTTOM", donutFrame, "CENTER")
+		donut.handle:SetWidth(3) -- Retain original width
+		donut.handle:SetVertexColor(color.r, color.g, color.b, color.a)
+	end
 	-----------------------------------------------------------------------------------------------------------
 
-	----------------------------------------------Needle-----------------------------------------------------
-	-- Needle part: thickness pixels wide, radius pixels long, rotates like a clock hand.
-	donut.needle = donutFrame:CreateTexture(nil, 'ARTWORK')
-	donut.needle:SetTexture(addon.addonFolder.."\\Textures\\2d")
-	donut.needle:SetPoint("BOTTOM", donutFrame, "CENTER")
-	donut.needle:SetWidth(3)
-	donut.needle:SetHeight(radius)
-	donut.needle:SetVertexColor(color.r, color.g, color.b, color.a)
-	-----------------------------------------------------------------------------------------------------------
-
+	-- Initial setup calls to apply properties and hide the cooldown initially
 	donut:SetThickness(thickness)
 	donut:SetDirection(direction)
 	donut:SetRadius(radius)
 	donut:SetBarColor(color)
 	donut:SetBackgroundColor(bgColor)
-	donut:SetAngle(0)
-
-	for _,v in ipairs(donut.background) do
-		v:Show()
-	end
-	donut.slice:Show()
-	donut.red:Show()
-	donut.blue:Show()
-	donut.needle:Show()
+	donut:SetCooldown(0, 0, false) -- Initialize as hidden/empty
 
 	return donut
 end

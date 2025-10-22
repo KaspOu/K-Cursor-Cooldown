@@ -496,7 +496,7 @@ function module:ApplyOptions()
 
 		if not self.db.profile.sparkOnly then
 			if not castFrame.donut then
-				local donut = addon.donut:New(false, self.db.profile.radius, self.db.profile.thickness, self.db.profile.latencyColor, self.db.profile.backgroundColor)
+				local donut = addon.donut:New(false, self.db.profile.radius, self.db.profile.thickness, self.db.profile.latencyColor, self.db.profile.backgroundColor, nil, false)
 				donut:AttachTo(castFrame)
 				castFrame.latencyDonut = donut
 
@@ -505,7 +505,7 @@ function module:ApplyOptions()
 				bgcm.g = 0
 				bgcm.b = 0
 				bgcm.a = 0
-				donut = addon.donut:New(true, self.db.profile.radius, self.db.profile.thickness, self.db.profile.barColor, bgcm, donut.frame)
+				donut = addon.donut:New(true, self.db.profile.radius, self.db.profile.thickness, self.db.profile.barColor, bgcm, donut.frame, true)
 				donut:AttachTo(castFrame)
 				castFrame.donut = donut
 			else
