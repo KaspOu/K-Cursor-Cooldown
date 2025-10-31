@@ -77,12 +77,15 @@ function addon.donut:New(direction, radius, thickness, color, bgColor, frame, ha
 		else
 			self.cooldown:Show()
 			if self.handle then self.handle:Show() end
+			self.barFrame:Show()
 			self.cooldown:SetCooldown(start, duration)
 
 			-- Update handle rotation based on current progress
 			local elapsed = GetTime() - start
 			local progress = math.min(1, math.max(0, elapsed / duration))
 			local degree = progress * 360
+			self.barFrame:SetMinMaxValues(0, duration)
+			self.barFrame:SetValue(elapsed)
 
 			if self.handle then
 				-- Rotate around the bottom center of the handle texture (0.5, 0)
@@ -108,6 +111,7 @@ function addon.donut:New(direction, radius, thickness, color, bgColor, frame, ha
 
 	function donut:Show()
 		self.bgFrame:Show()
+		self.barFrame:Show()
 		self.backgroundTexture:Show()
 		self.cooldown:Show()
 		self.innerBackgroundTexture:Show()
@@ -116,6 +120,7 @@ function addon.donut:New(direction, radius, thickness, color, bgColor, frame, ha
 
 	function donut:Hide()
 		self.bgFrame:Hide()
+		self.barFrame:Hide()
 		self:SetCooldown(0, 0, false) -- Reset and hide cooldown
 	end
 	-----------------------------------------------------------------------------------------------------------
@@ -127,6 +132,28 @@ function addon.donut:New(direction, radius, thickness, color, bgColor, frame, ha
 	donut.frame = donutFrame
 	donutFrame:SetParent(bgFrame)
 	donutFrame:SetAllPoints(bgFrame)
+
+	local barFrame = CreateFrame("StatusBar", nil, donutFrame)
+	donut.barFrame = barFrame
+	if (hasHand) then
+		-- Mixin(barFrame, SmoothStatusBarMixin)
+		barFrame:SetFrameLevel(3)
+		-- barFrame:SetMinMaxValues(0, 100)
+		-- barFrame:SetValue(100)
+		barFrame:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar") -- Set a default texture to make the status bar visible
+		barFrame:GetStatusBarTexture():SetVertexColor(0, 1, 0, .8)
+		barFrame:SetHeight(10)
+		barFrame:SetPoint("BOTTOM", donutFrame, "BOTTOM", 0, 5)
+		barFrame:SetPoint("LEFT", donutFrame, "LEFT", 5, 0)
+		barFrame:SetPoint("RIGHT", donutFrame, "RIGHT", -5, 0)
+	end
+
+	-- barFrame:SetMinMaxValues(min, max)
+	-- barFrame:SetValue(healthLost)
+	-- barFrame:SetMinMaxSmoothedValue(min, max)
+	-- barFrame:SetSmoothedValue(healthLost)
+	-- applyBarTexture(barFrame, _G[ns.OPTIONS_NAME].Bar_Texture, DEFAULT_RAIDHEALTHBAR_TEXTURE)
+
 	-----------------------------------------------------------------------------------------------------------
 
 	----------------------------------------------Background----------------------------------------------
