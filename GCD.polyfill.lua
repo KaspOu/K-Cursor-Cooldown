@@ -53,3 +53,10 @@ addon.GetSpellBookItemName = GetSpellBookItemName or function(index, bookType)
   local spellBank = (bookType == addon.BOOKTYPE_SPELL) and Enum.SpellBookSpellBank.Player or Enum.SpellBookSpellBank.Pet;
   return C_SpellBook.GetSpellBookItemName(index, spellBank);
 end
+
+addon.UnitCastingInfo = not issecretvalue and UnitCastingInfo or function(unit)
+-- return "spell", "text", _, castStartTime, castEndTime, _, _, _, _
+  local spell, text = UnitCastingInfo(unit)
+  local g = GetTime()*1000
+  return spell, text, _, g-500, g+1000, _, _, _, _
+end

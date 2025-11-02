@@ -359,32 +359,34 @@ function module:Hide(hideGcd)
 end
 
 local function OnUpdate(self, elapsed)
-	local castPerc = castDuration == 0 and 0 or ((1000 * GetTime() - castStartTime) / castDuration)
-	if castDuration ~= 0 and castPerc < 1 then
-		local angle = castPerc * 360
-		if (module.db.profile.reverseChanneling and addon.BlizzardCastingBarFrame.channeling) then
-			angle = (1 - castPerc) * 360
-		end
-		if not module.db.profile.sparkOnly then
-			castFrame.donut:SetAngle(angle)
-		end
-		angle = 360 -(-90 + angle)
+	castFrame.donut:SetCooldown(castStartTime, castDuration, true, castEndTime)
+	-- local castPerc = castDuration == 0 and 0 or ((1000 * GetTime() - castStartTime) / castDuration)
+	-- if castDuration ~= 0 and castPerc < 1 then
+	-- 	local angle = castPerc * 360
+	-- 	if (module.db.profile.reverseChanneling and addon.BlizzardCastingBarFrame.channeling) then
+	-- 		angle = (1 - castPerc) * 360
+	-- 	end
+	-- 	if not module.db.profile.sparkOnly then
+	-- 		-- castFrame.donut:SetAngle(angle, castEndTime)
+	-- 		castFrame.donut:SetCooldown(castStartTime, castDuration, true, castEndTime)
+	-- 	end
+	-- 	angle = 360 -(-90 + angle)
 
-		local x = cos(angle) * module.db.profile.radius * 0.95
-		local y = sin(angle) * module.db.profile.radius * 0.95
-		local spark = castFrame.sparkTexture
-		spark:SetRotation(rad(angle+90))
-		spark:ClearAllPoints()
-		spark:SetPoint("CENTER", castFrame, "CENTER", x, y)
+	-- 	local x = cos(angle) * module.db.profile.radius * 0.95
+	-- 	local y = sin(angle) * module.db.profile.radius * 0.95
+	-- 	local spark = castFrame.sparkTexture
+	-- 	spark:SetRotation(rad(angle+90))
+	-- 	spark:ClearAllPoints()
+	-- 	spark:SetPoint("CENTER", castFrame, "CENTER", x, y)
 
-		if module.db.profile.sparkOnly and castPerc > 1-castLatency then
-			spark:SetVertexColor(module.db.profile.latencyColor.r, module.db.profile.latencyColor.g, module.db.profile.latencyColor.b, module.db.profile.latencyColor.a)
-		else
-			spark:SetVertexColor(module.db.profile.sparkColor.r, module.db.profile.sparkColor.g, module.db.profile.sparkColor.b, module.db.profile.sparkColor.a)
-		end
-	else
-		module:Hide()
-	end
+	-- 	if module.db.profile.sparkOnly and castPerc > 1-castLatency then
+	-- 		spark:SetVertexColor(module.db.profile.latencyColor.r, module.db.profile.latencyColor.g, module.db.profile.latencyColor.b, module.db.profile.latencyColor.a)
+	-- 	else
+	-- 		spark:SetVertexColor(module.db.profile.sparkColor.r, module.db.profile.sparkColor.g, module.db.profile.sparkColor.b, module.db.profile.sparkColor.a)
+	-- 	end
+	-- else
+	-- 	module:Hide()
+	-- end
 end
 
 function module:UNIT_SPELLCAST_SENT(_, unit)

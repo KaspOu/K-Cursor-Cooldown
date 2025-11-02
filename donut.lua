@@ -70,7 +70,17 @@ function addon.donut:New(direction, radius, thickness, color, bgColor, frame, ha
 	-- New primary method for setting cooldown progress using standard WoW API
 	-- `start` and `duration` are standard Cooldown frame parameters.
 	-- `enable` can be used to explicitly show/hide the cooldown.
-	function donut:SetCooldown(start, duration, enable)
+	function donut:SetCooldown(start, duration, enable, endExpected)
+		local g = GetTime()*1000
+		if enable then
+			_, _, _, start, endExpected, _, _, _, _ = UnitCastingInfo("player")
+			if (type(start) ~= "nil") then
+				self.barFrame:Show()
+				self.barFrame:SetMinMaxValues(start, endExpected)
+				self.barFrame:SetValue(g)
+			end
+			return
+		end
 		if enable == false or duration == 0 then
 			self.cooldown:Hide()
 			if self.handle then self.handle:Hide() end
@@ -101,12 +111,12 @@ function addon.donut:New(direction, radius, thickness, color, bgColor, frame, ha
 
 	-- Retain SetAngle for compatibility, adapting it to the new system.
 	-- This will simulate a cooldown based on a degree (0-360).
-	function donut:SetAngle(degree)
-		degree = math.max(0, math.min(degree, 360))
-		local progress = degree / 360
-		local simulatedDuration = 1 -- Use a fixed duration for angle-based setting
-		local simulatedStart = GetTime() - (progress * simulatedDuration)
-		self:SetCooldown(simulatedStart, simulatedDuration, true)
+	function donut:SetAngle(degree, endTime)
+		-- degree = math.max(0, math.min(degree, 360))
+		-- local progress = degree / 360
+		-- local simulatedDuration = 1 -- Use a fixed duration for angle-based setting
+		-- local simulatedStart = GetTime() - (progress * simulatedDuration)
+		-- self:SetCooldown(simulatedStart, simulatedDuration, true, endTime)
 	end
 
 	function donut:Show()
@@ -134,9 +144,13 @@ function addon.donut:New(direction, radius, thickness, color, bgColor, frame, ha
 	donutFrame:SetAllPoints(bgFrame)
 
 	local barFrame = CreateFrame("StatusBar", nil, donutFrame)
+
 	donut.barFrame = barFrame
 	if (hasHand) then
 		-- Mixin(barFrame, SmoothStatusBarMixin)
+		barFrame.attachedToPlayerFrame = false
+		-- Mixin(barFrame, PlayerCastingBarMixin)
+
 		barFrame:SetFrameLevel(3)
 		-- barFrame:SetMinMaxValues(0, 100)
 		-- barFrame:SetValue(100)
@@ -146,6 +160,20 @@ function addon.donut:New(direction, radius, thickness, color, bgColor, frame, ha
 		barFrame:SetPoint("BOTTOM", donutFrame, "BOTTOM", 0, 5)
 		barFrame:SetPoint("LEFT", donutFrame, "LEFT", 5, 0)
 		barFrame:SetPoint("RIGHT", donutFrame, "RIGHT", -5, 0)
+			-- local castingBarTemplateFrame = CreateFrame("Frame", nil, fra, "CastingBarFrameTemplate")
+			-- castingBarTemplateFrame.attachedToPlayerFrame = false
+			-- castingBarTemplateFrame:SetPoint("BOTTOM", donutFrame, "BOTTOM", 0, 5)
+			-- castingBarTemplateFrame:SetPoint("LEFT", donutFrame, "LEFT", 5, 0)
+			-- castingBarTemplateFrame:SetPoint("RIGHT", donutFrame, "RIGHT", -5, 0).
+			-- -- barFrame = castingBarTemplateFrame.StatusBar
+
+			-- -- Hide the default elements of the CastingBarFrameTemplate (text, timer, spark, icon)
+			-- -- to prevent visual conflicts, as the main Cast module or other parts of the donut
+			-- -- might handle these visuals separately.
+			-- if castingBarTemplateFrame.Text then castingBarTemplateFrame.Text:Hide() end
+			-- if castingBarTemplateFrame.Timer then castingBarTemplateFrame.Timer:Hide() end
+			-- if castingBarTemplateFrame.Spark then castingBarTemplateFrame.Spark:Hide() end
+			-- if castingBarTemplateFrame.Icon then castingBarTemplateFrame.Icon:Hide() end
 	end
 
 	-- barFrame:SetMinMaxValues(min, max)
