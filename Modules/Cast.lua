@@ -294,15 +294,18 @@ function module:GetOptions()
 end
 
 function module:RegisterUnitEvent(event, unit)
-	AceAddon30Frame:RegisterUnitEvent(event, unit)
-	if (not AceAddon30Frame._RegisterUnitEvents) then
-		AceAddon30Frame._RegisterUnitEvents = true
-		AceAddon30Frame:SetScript("OnEvent", function(self, event, unit, ...)
-			if type(module[event]) == "function" then
-				module[event](module, event, unit, ...)
+	if not self._unitEventFrame then
+		local f = CreateFrame("Frame")
+		f:SetScript("OnEvent", function(_, evt, u, ...)
+			local handler = module[evt]
+			if type(handler) == "function" then
+				handler(module, evt, u, ...)
 			end
 		end)
+		---@diagnostic disable-next-line: inject-field
+		self._unitEventFrame = f
 	end
+	self._unitEventFrame:RegisterUnitEvent(event, unit)
 end
 
 function module:OnEnable()
@@ -328,6 +331,10 @@ end
 
 function module:OnDisable()
 	self:UnregisterAllEvents()
+	---@diagnostic disable-next-line: inject-field
+	if self._unitEventFrame then
+		self._unitEventFrame:UnregisterAllEvents()
+	end
 	self:Hide()
 end
 
