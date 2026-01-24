@@ -4,7 +4,7 @@ local L = LibStub("AceLocale-3.0"):GetLocale("CC")
 local dbVersion = 1
 
 local GetTime = GetTime
-local spellNum
+local spellNum = 61304
 local spellName
 local gcdFrame
 local options
@@ -22,10 +22,10 @@ local defaults = {
 }
 
 function module:OnEnable()
-  -- self:SPELLS_CHANGED()
   self:ApplyOptions()
-  -- self:RegisterEvent("SPELLS_CHANGED")
+  self:SPELLS_CHANGED()
   self:RegisterEvent("ACTIONBAR_UPDATE_COOLDOWN")
+  self:RegisterEvent("SPELLS_CHANGED")
 end
 
 function module:OnDisable()
@@ -47,28 +47,10 @@ function module:OnInitialize()
 end
 
 function module:GetOptions()
-  if not C_Spell.DoesSpellExist(61304) then
-    options = {
-      name = "|cffff2020GCD - disabled -|r",
-      type = "group",
-      dialogHidden = true,
-      guiHidden = true,
-      args = {
-      }
-    }
-    addon.db.profile.modules.gcd = false
-    return options
-  end
   options = {
     name = "GCD",
     type = "group",
     args = {
-      description = {
-        name = "|TInterface\\DialogFrame\\UI-Dialog-Icon-AlertNew:18|t|cffff2020 " .. L["Midnight: GCD is not available in combat"] .. "|r\n ",
-        type = "description",
-        order = 1,
-        width = "full",
-      },
       sparkOnly = {
         name = L["Show spark only"],
         type = "toggle",
@@ -247,9 +229,8 @@ function module:ApplyOptions()
 end
 
 function module:ACTIONBAR_UPDATE_COOLDOWN()
-  -- if spellNum then
-
-    local start, dur = addon.GetSpellCooldown(61304)
+  if spellNum then
+    local start, dur = addon.GetSpellCooldown(spellNum)
     if type(dur) == "number" then
       if dur > 0 and dur <= 1.5 then
         gcdFrame.startTime = start
@@ -257,14 +238,28 @@ function module:ACTIONBAR_UPDATE_COOLDOWN()
         self:Show()
       end
     end
-  -- end
+  end
 end
 
--- function module:SPELLS_CHANGED()
---   local _, class = UnitClass("player")
---   spellName = addon.GetSpellInfo(spells[class])
---   spellNum = addon:GetSpellPosInSpellbook(spellName)
--- end
+local spells = {
+	["DRUID"] = 5185,
+	["PALADIN"] = 635,
+	["PRIEST"] = 2050,
+	["SHAMAN"] = 331,
+	["WARRIOR"] = 6673,
+	["DEATHKNIGHT"] = 45902,
+	["HUNTER"] = 75,
+	["MAGE"] = 1459,
+	["WARLOCK"] = 687,
+	["ROGUE"] = 1752,
+}
+function module:SPELLS_CHANGED()
+  if not C_Spell.DoesSpellExist(61304) then
+    local _, class = UnitClass("player")
+    spellName = addon.GetSpellInfo(spells[class])
+    spellNum = spellName and spells[class] or nil -- addon:GetSpellPosInSpellbook(spellName)
+  end
+end
 
 function module:Unlock(cursor)
   if not self.db.profile.sparkOnly then
