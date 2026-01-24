@@ -95,6 +95,9 @@ function module:OnEnable()
   self:ACTIONBAR_UPDATE_COOLDOWN()
   self:RegisterEvent("SPELLS_CHANGED")
   self:RegisterEvent("ACTIONBAR_UPDATE_COOLDOWN")
+  -- if C_CurveUtil then
+  --   self:RegisterEvent("SPELL_UPDATE_COOLDOWN")
+  -- end
 end
 
 function module:OnDisable()
@@ -321,12 +324,23 @@ function module:GetOptions()
   return options
 end
 
+function module:SPELL_UPDATE_COOLDOWN()
+  self:ACTIONBAR_UPDATE_COOLDOWN()
+end
+
 function module:ACTIONBAR_UPDATE_COOLDOWN()
     local _, gcdLeft = addon.GetSpellCooldown(61304)
     for _, v in ipairs(cdFrames) do
       local spell = addon.GetSpellBookItemName(v.spell, addon.BOOKTYPE_SPELL)
-      local start, dur = addon.GetSpellCooldown(spell)
-      if type(dur) == "number" and type(gcdLeft) == "number" then
+      local start, dur, isOnGCD = addon.GetSpellCooldown(spell)
+      -- Since Midnight (12)
+      if C_Spell.GetSpellCooldownDuration then
+        v.frame.startTime = start
+        v.frame.duration = dur
+        v.frame.isOnGCD = isOnGCD
+        v.frame.durationObject = C_Spell.GetSpellCooldownDuration(spell)
+        self:Show(v.frame)
+      elseif type(dur) == "number" and type(gcdLeft) == "number" then
         if dur > gcdLeft then
           v.frame.startTime = start
           v.frame.duration = dur
@@ -377,7 +391,32 @@ function module:Hide(frame)
   frame:Hide()
 end
 
+-- Since Midnight (12)
+local backCurve, textCurve
+if C_CurveUtil then
+  textCurve = C_CurveUtil.CreateColorCurve();
+  textCurve:SetType(Enum.LuaCurveType.Step);
+  textCurve:AddPoint(0, CreateColor(1, 1, 1, 0));
+  textCurve:AddPoint(.1, CreateColor(1, 1, 1, 1));
+
+  backCurve = C_CurveUtil.CreateColorCurve();
+  backCurve:SetType(Enum.LuaCurveType.Linear);
+  backCurve:AddPoint( 0, CreateColor(1, 1, 1, 0));
+  backCurve:AddPoint( .1, CreateColor(1, 1, 1, 1));
+  backCurve:AddPoint( 1,  CreateColor(1, 0, 0, 1));
+end
+
 local function OnUpdate(self, elapsed)
+  -- Since Midnight (12)
+  if C_CurveUtil then
+    self:SetAlphaFromBoolean(self.isOnGCD or false, 0, 1)
+    local remaining = self.durationObject:GetRemainingDuration(1)
+    self.cdText:SetText(string.format("%.1f", remaining))
+    self.cdText:SetVertexColor(self.durationObject:EvaluateRemainingDuration(textCurve, 1):GetRGBA())
+    self.texture:SetVertexColor(self.durationObject:EvaluateRemainingPercent(backCurve, 1):GetRGBA())
+    return
+  end
+  -- fallback
   if not self.startTime or not self.duration or self.duration <= 0 then
     -- print("exit")
     return
@@ -435,8 +474,10 @@ function module:Unlock(cursor)
     v.frame:ClearAllPoints()
     v.frame:SetParent(cursor)
     v.frame:SetPoint('CENTER', cursor, 'CENTER', (v.pos.x) / v.frame:GetEffectiveScale(), (v.pos.y) / v.frame:GetEffectiveScale())
-    v.frame.texture:SetVertexColor(1.0, 1.0, 1.0)
+    v.frame.texture:SetVertexColor(1.0, 1.0, 1.0, 1)
+    v.frame.cdText:SetVertexColor(1.0, 1.0, 1.0, 1)
     v.frame.cdText:SetText("")
+    v.frame:SetAlpha(1)
     v.frame:Show()
     v.frame:SetMovable(true)
     v.frame:EnableMouse(true)

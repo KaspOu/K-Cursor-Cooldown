@@ -9,10 +9,7 @@ addon.BOOKTYPE_PET = BOOKTYPE_PET or Enum.SpellBookSpellBank.Pet;
 addon.GetSpellCooldown = GetSpellCooldown or function(spellID)
   local spellCooldownInfo = C_Spell.GetSpellCooldown(spellID);
   if spellCooldownInfo then
-    if addon.isSecret(spellCooldownInfo.startTime) then
-      return 0, 1, true, 1
-    end
-    return spellCooldownInfo.startTime, spellCooldownInfo.duration, spellCooldownInfo.isEnabled, spellCooldownInfo.modRate;
+    return spellCooldownInfo.startTime, spellCooldownInfo.duration, spellCooldownInfo.isOnGCD, spellCooldownInfo.isEnabled, spellCooldownInfo.modRate;
   end
 end
 
