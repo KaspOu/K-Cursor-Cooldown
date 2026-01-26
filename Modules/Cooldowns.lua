@@ -410,6 +410,9 @@ local function OnUpdate(self, elapsed)
   -- Since Midnight (12)
   if C_CurveUtil then
     self:SetAlphaFromBoolean(self.isOnGCD or false, 0, 1)
+    if not self.durationObject then
+      return
+    end
     local remaining = self.durationObject:GetRemainingDuration(1)
     self.cdText:SetText(string.format("%.1f", remaining))
     self.cdText:SetVertexColor(self.durationObject:EvaluateRemainingDuration(textCurve, 1):GetRGBA())
