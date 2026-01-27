@@ -54,22 +54,22 @@ end
 
 local cdSpells = {
   ["DRUID"] = {
-    {['spellID'] = 48438, ['pos'] = {['x'] = 0, ['y'] = 0}},
-    {['spellID'] = 18562, ['pos'] = {['x'] = 0, ['y'] = 0}},
+    {['spellID'] = 48438, ['pos'] = {['x'] = 0, ['y'] = 0}}, -- Wild Growth
+    {['spellID'] = 18562, ['pos'] = {['x'] = 0, ['y'] = 0}}, -- Swiftmend
     },
   ["PRIEST"] = {
-    {['spellID'] = 47540, ['pos'] = {['x'] = 0, ['y'] = 0}},
-    {['spellID'] = 586, ['pos'] = {['x'] = 0, ['y'] = 0}},
-    {['spellID'] = 34433, ['pos'] = {['x'] = 0, ['y'] = 0}},
+    {['spellID'] = 47540, ['pos'] = {['x'] = 0, ['y'] = 0}}, -- Penance
+    {['spellID'] = 586, ['pos'] = {['x'] = 0, ['y'] = 0}}, -- Fade
+    {['spellID'] = 34433, ['pos'] = {['x'] = 0, ['y'] = 0}}, -- ShadowFiend
   },
   ["SHAMAN"] = {
-    {['spellID'] = 32182, ['pos'] = {['x'] = 0, ['y'] = 0}},
+    {['spellID'] = 32182, ['pos'] = {['x'] = 0, ['y'] = 0}}, -- Heroism
   },
   ["MAGE"] = {
-    {['spellID'] = 80353, ['pos'] = {['x'] = 0, ['y'] = 0}},
+    {['spellID'] = 80353, ['pos'] = {['x'] = 0, ['y'] = 0}}, -- Time Warp
   },
   ["MONK"] = {
-    {['spellID'] = 115151, ['pos'] = {['x'] = 0, ['y'] = 0}},
+    {['spellID'] = 115151, ['pos'] = {['x'] = 0, ['y'] = 0}}, -- Renewing Mist
   }
 }
 
@@ -180,7 +180,7 @@ function module:PopulateCdSpellsOptions()
             name = L["Remove Spell"],
             type = "execute",
             func = function()
-              tremove(cdSpells, i)
+              tremove(cdSpells, i) -- FIXME
               options.args.spells.args[tostring(i)] = nil
               self:SPELLS_CHANGED()
               self:PopulateCdSpellsOptions()

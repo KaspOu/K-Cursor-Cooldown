@@ -168,7 +168,7 @@ local function OnUpdate(self, elapsed)
   local gcdPerc = (GetTime() - self.startTime) / self.duration
   if gcdPerc < 1 then
     local angle = gcdPerc * 360
-    if not module.db.profile.sparkOnly then
+    if not module.db.profile.sparkOnly and gcdFrame.donut then
       gcdFrame.donut:SetAngle(angle)
     end
     angle = 360 - (-90 + angle)

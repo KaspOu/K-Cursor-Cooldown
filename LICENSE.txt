@@ -1,5 +1,5 @@
 
-Copyright (C) 2024-2025 Kallye
+Copyright (C) 2024-2026 Kallye
 Copyright (C) 2012 Bakahar
 Copyright (C) 2009 Finghin
 
