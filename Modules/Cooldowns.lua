@@ -333,18 +333,22 @@ function module:ACTIONBAR_UPDATE_COOLDOWN()
     for _, v in ipairs(cdFrames) do
       local spell = addon.GetSpellBookItemName(v.spell, addon.BOOKTYPE_SPELL)
       local start, dur, isOnGCD = addon.GetSpellCooldown(spell)
-      -- Since Midnight (12)
-      if C_Spell.GetSpellCooldownDuration then
-        v.frame.startTime = start
-        v.frame.duration = dur
-        v.frame.isOnGCD = isOnGCD
-        v.frame.durationObject = C_Spell.GetSpellCooldownDuration(spell)
-        self:Show(v.frame)
-      elseif type(dur) == "number" and type(gcdLeft) == "number" then
-        if dur > gcdLeft then
+      if start == nil then
+        self:Hide(v.frame)
+      else
+        -- Since Midnight (12)
+        if C_Spell.GetSpellCooldownDuration then
           v.frame.startTime = start
           v.frame.duration = dur
+          v.frame.isOnGCD = isOnGCD
+          v.frame.durationObject = C_Spell.GetSpellCooldownDuration(spell)
           self:Show(v.frame)
+        elseif type(dur) == "number" and type(gcdLeft) == "number" then
+          if dur > gcdLeft then
+            v.frame.startTime = start
+            v.frame.duration = dur
+            self:Show(v.frame)
+          end
         end
       end
     end

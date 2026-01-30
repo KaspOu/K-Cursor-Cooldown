@@ -11,6 +11,7 @@ addon.GetSpellCooldown = GetSpellCooldown or function(spellID)
   if spellCooldownInfo then
     return spellCooldownInfo.startTime, spellCooldownInfo.duration, spellCooldownInfo.isOnGCD, spellCooldownInfo.isEnabled, spellCooldownInfo.modRate;
   end
+  return nil
 end
 
 addon.GetSpellInfo = GetSpellInfo or function(spellID)
