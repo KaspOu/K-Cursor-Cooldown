@@ -47,6 +47,13 @@ function module:OnInitialize()
 end
 
 function module:GetOptions()
+  -- FIXME: Classic gcd reactivation
+  if not C_Spell.DoesSpellExist(61304) then
+    if not addon.db.profile.modules.gcd and not addon.db.profile.modules.gcd_back then
+      addon.db.profile.modules.gcd = true
+      addon.db.profile.modules.gcd_back = true
+    end
+  end
   options = {
     name = "GCD",
     type = "group",

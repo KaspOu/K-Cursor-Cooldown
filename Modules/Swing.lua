@@ -2,6 +2,10 @@
 	Most of the functionality was taken from the Quartz - Swing Module. Credits go to Nymbia and Nevcairiel
 ]]
 
+-- Since Midnight (12)
+-- No more useable, due to combatevent restrictions
+if (issecretvalue) then return end
+
 local addon = LibStub("AceAddon-3.0"):GetAddon("CC")
 local module = addon:NewModule("swing")
 local L = LibStub("AceLocale-3.0"):GetLocale("CC")
@@ -290,7 +294,8 @@ function module:UNIT_SPELLCAST_START(event, unit, spell)
 	end
 end
 
-function module:COMBAT_LOG_EVENT_UNFILTERED(event, timestamp, combatevent, srcGUID, srcName, srcFlags, dstName, dstGUID, dstFlags, spellID, spellName)
+function module:COMBAT_LOG_EVENT_UNFILTERED(event)
+	local timestamp, combatevent, _, srcGUID, srcName, srcFlags, dstName, dstGUID, dstFlags, _, _, spellID, spellName = CombatLogGetCurrentEventInfo()
 	if srcGUID == UnitGUID("player") then
 		if combatevent == "SWING_DAMAGE" or combatevent == "SWING_MISSED" then
 			self:Show()
