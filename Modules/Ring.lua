@@ -7,14 +7,15 @@ local GetTime = GetTime
 
 local ringFrame
 local options
-local showRequests
+local showRequests = {}
 
 local defaults = {
 	profile = {
 		color = {r=0, g=1, b=0, a=0.5},
 		texture = "165624",
 		rotate = true,
-		width = 75
+		width = 75,
+		visibility = "gcd_casting"
 	}
 }
 
@@ -56,16 +57,22 @@ function module:ApplyOptions()
 		texture:SetPoint('CENTER', ringFrame, 'CENTER')
 		texture:SetRotation(rad(texture.hAngle))
 		texture:Show()
-		ringFrame:Hide()
+		self:UpdateVisibility()
 	end
 end
 
 function module:OnEnable()
 	self:ApplyOptions()
 	showRequests = {}
+	self:RegisterEvent("PLAYER_REGEN_ENABLED", "UpdateVisibility")
+	self:RegisterEvent("PLAYER_REGEN_DISABLED", "UpdateVisibility")
+	self:RegisterEvent("GROUP_JOINED", "UpdateVisibility")
+	self:RegisterEvent("GROUP_LEFT", "UpdateVisibility")
+	self:UpdateVisibility()
 end
 
 function module:OnDisable()
+	self:UnregisterAllEvents()
 	ringFrame:Hide()
 end
 
@@ -73,7 +80,50 @@ function module:FixDatabase()
 	if self.db.profile.version then
 		-- nothing to do yet
 	end
+	if self.db.profile.visibility == nil then
+		self.db.profile.visibility = "gcd_casting"
+	end
 	self.db.profile.version = dbVersion
+end
+
+function module:ShouldShowRing()
+	local v = self.db.profile.visibility
+	if v == "always" then
+		return true
+	end
+	if v == "combat" and UnitAffectingCombat("player") then
+		return true
+	end
+	if v == "raid" and IsInRaid() then
+		return true
+	end
+	if v == "party_raid" and IsInGroup() then
+		return true
+	end
+	-- gcd_casting detection
+	for _, r in pairs(showRequests) do
+		if r then return true end
+	end
+	return false
+end
+
+function module:UpdateVisibility()
+	if not ringFrame then return end
+	local show = self:ShouldShowRing()
+	local v = self.db.profile.visibility
+	-- En mode gcd_casting, l'ancre est gérée par GCD/Cast/Swing. Sinon, le Ring doit demander l'ancre.
+	if v ~= "gcd_casting" then
+		if show then
+			addon:Show("ring")
+		else
+			addon:Hide("ring")
+		end
+	end
+	if show then
+		ringFrame:Show()
+	else
+		ringFrame:Hide()
+	end
 end
 
 function module:OnInitialize()
@@ -191,6 +241,32 @@ function module:GetOptions()
 					end,
 				order = 16
 			},
+			visibility = {
+				name = L["Visibility"],
+				type = "select",
+				disabled = function() return not addon.db.profile.modules.ring end,
+				get = function() return self.db.profile.visibility end,
+				set = function(_, val)
+					self.db.profile.visibility = val
+					self:UpdateVisibility()
+				end,
+				values = {
+					gcd_casting = L["GCD / Casting only"],
+					combat = L["In combat"],
+					raid = L["In raid"],
+					party_raid = L["In party/raid"],
+					always = L["Always"],
+				},
+				sorting = {
+					"gcd_casting",
+					"combat",
+					"raid",
+					"party_raid",
+					"always"
+				},
+				order = 19,
+				width= "double"
+			},
 			misc = {
 				name = L["Miscellaneous"],
 				type = "header",
@@ -212,24 +288,14 @@ function module:GetOptions()
 	return options
 end
 
-function module:Show(module)
-	showRequests[module] = true;
-	ringFrame:Show();
+function module:Show(moduleName)
+	showRequests[moduleName] = true
+	self:UpdateVisibility()
 end
 
-function module:Hide(module)
-	showRequests[module] = false;
-
-	local hide = true;
-	for _,v in pairs(showRequests) do
-		if v then
-			hide = false
-			break
-		end
-	end
-	if hide then
-		ringFrame:Hide()
-	end
+function module:Hide(moduleName)
+	showRequests[moduleName] = false
+	self:UpdateVisibility()
 end
 
 function module:Unlock(cursor)
@@ -249,5 +315,5 @@ function module:Lock()
 	ringFrame:ClearAllPoints()
 	ringFrame:SetParent(addon.anchor)
 	ringFrame:SetAllPoints()
-	ringFrame:Show()
+	self:UpdateVisibility()
 end
