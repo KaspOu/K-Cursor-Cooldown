@@ -86,7 +86,8 @@ local defaults = {
   profile = {
     size = 15,
     font = "Calibri",
-    fontSize = 11
+    fontSize = 11,
+    invert = false
   }
 }
 
@@ -220,6 +221,17 @@ function module:GetOptions()
         end,
         order = 2
       },
+      invert = {
+        name = L["Invert"],
+        type = "toggle",
+        disabled = function() return not addon.db.profile.modules.cooldowns end,
+        get = function() return self.db.profile.invert end,
+        set = function(info, value)
+          self.db.profile.invert = value
+          self:ACTIONBAR_UPDATE_COOLDOWN()
+        end,
+        order = 3
+      },
       fontHeader = {
         name = L["Text"],
         type = "header",
@@ -329,6 +341,7 @@ function module:SPELL_UPDATE_COOLDOWN()
 end
 
 function module:ACTIONBAR_UPDATE_COOLDOWN()
+    local invert = self.db.profile.invert
     local _, gcdLeft = addon.GetSpellCooldown(61304)
     for _, v in ipairs(cdFrames) do
       local spell = addon.GetSpellBookItemName(v.spell, addon.BOOKTYPE_SPELL)
