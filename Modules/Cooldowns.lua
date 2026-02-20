@@ -101,6 +101,7 @@ function module:OnEnable()
   if not hasSecrets then
     self:RegisterEvent("SPELL_UPDATE_COOLDOWN")
   end
+  self:RegisterEvent("SPELL_ACTIVATION_OVERLAY_HIDE")
 end
 
 function module:OnDisable()
@@ -123,6 +124,9 @@ function module:FixDatabase()
     -- nothing to do yet
   end
   self.db.profile.version = dbVersion
+  if self.db.profile.invert == nil then
+    self.db.profile.invert = false
+  end
 end
 
 function module:OnInitialize()
@@ -336,7 +340,7 @@ function module:GetOptions()
   return options
 end
 
-function module:SPELL_UPDATE_COOLDOWN()
+function module:SPELL_ACTIVATION_OVERLAY_HIDE()
   self:ACTIONBAR_UPDATE_COOLDOWN()
 end
 
@@ -349,6 +353,27 @@ function module:ACTIONBAR_UPDATE_COOLDOWN()
       local scd = C_Spell.GetSpellCooldown(spell)
       if scd == nil then
         self:Hide(v.frame)
+      elseif invert then
+          print ('start', start, 'dur', dur, 'isOnGCD', isOnGCD)
+          -- not cooldown: 0 0 1
+          -- on cooldown:
+          -- 8k 1 1
+          -- 8k 120 1
+          if dur == 0 then
+            v.frame.startTime = scd.startTime
+            v.frame.duration = scd.duration
+            v.frame.isOnGCD = not scd.isOnGCD
+            v.frame.isActive = not scd.isActive
+            v.frame.cdText:SetText("")
+            v.frame.texture:SetVertexColor(1, 1, 1, 1)
+            v.frame.cdText:SetText('')
+            --self:Show(v.frame)
+            v.frame:SetAlpha(1)
+          else
+            v.frame.isOnGCD = false -- on cooldown if isOnGCG == false
+            -- self:Hide(v.frame)
+            v.frame:SetAlpha(0)
+          end
       else
         -- Since Midnight (12)
         if C_Spell.GetSpellCooldownDuration then
@@ -369,7 +394,6 @@ function module:ACTIONBAR_UPDATE_COOLDOWN()
             v.frame.duration = nil
             self:Hide(v.frame)
           end
-        end
       end
     end
 end
@@ -431,6 +455,22 @@ if hasSecrets then
 end
 
 local function OnUpdate(self, elapsed)
+  if self.db ~= nil then
+    local invert = self.db.profile.invert
+    -- print('isinvert', invert, ' isOnGCD:', self.isOnGCD, ' > on cd:', self.isOnGCD == false, elapsed)
+    if invert then
+      self.texture:SetVertexColor(1, 1, 1, 1)
+      self.cdText:SetText('')
+      if self.isOnGCD == false then
+        self:SetAlpha(0)
+      else
+        self:SetAlpha(1)
+        -- module:Hide(self)
+      end
+      return
+    end
+  end
+  print('stop')
   -- Since Midnight (12)
   if hasSecrets then
     if (self.isActive ~= nil) then
@@ -471,6 +511,7 @@ local function OnUpdate(self, elapsed)
 end
 
 function module:ApplyOptions()
+  local invert = self.db.profile.invert
   local anchor = addon.anchor
   if self:IsEnabled() then
     for i, v in ipairs(cdFrames) do
@@ -498,6 +539,11 @@ function module:ApplyOptions()
       v.frame.texture:SetHeight(self.db.profile.size * v.frame:GetEffectiveScale())
       v.frame.cdText:SetFont(media:Fetch("font", self.db.profile.font), self.db.profile.fontSize, "OUTLINE, MONOCHROME")
       self:Hide(v.frame)
+      if invert then
+        v.frame.texture:SetVertexColor(1, 1, 1)
+        self:Show(v.frame)
+      end
+      v.frame.db = self.db  -- pour que OnUpdate puisse lire profile.inverted
     end
   end
 end
