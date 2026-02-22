@@ -60,3 +60,7 @@ L["Always"] = "항상"
 L["Width"] = "너비" -- ChatGPT
 L["x-Offset"] = "x축"
 L["y-Offset"] = "y축"
+L["Filter"] = "필터"
+L["Role filter"] = "역할 필터"
+L["When enabled, the addon is hidden when your current spec's role is disabled below."] = "활성화하면 현재 특성의 역할이 아래에서 비활성화된 경우 애드온이 숨겨집니다."
+L["Enable role filter"] = "역할 필터 사용"

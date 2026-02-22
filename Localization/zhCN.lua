@@ -60,3 +60,7 @@ L["Always"] = "始终"
 L["Width"] = "宽度" -- ChatGPT
 L["x-Offset"] = "x-坐标"
 L["y-Offset"] = "y-坐标"
+L["Filter"] = "筛选"
+L["Role filter"] = "角色筛选"
+L["When enabled, the addon is hidden when your current spec's role is disabled below."] = "启用后，当您当前专精的角色在下方被禁用时，插件将被隐藏。"
+L["Enable role filter"] = "启用角色筛选"
