@@ -10,6 +10,9 @@ local defaults, options
 local showRequests = {}
 
 function addon:Show(name)
+	if self:IsRoleFiltered() then
+		return
+	end
 	showRequests[name] = true
 	self.anchor:Show()
 end
@@ -61,7 +64,14 @@ function addon:InitializeDefaults()
 				y = 400
 			},
 			attachToMouse = true,
-			modules = {}
+			modules = {},
+			-- Role filter: addon is hidden when current spec role is disabled
+			filterByRole = false,
+			filterRoles = {
+				TANK = true,
+				HEALER = true,
+				DAMAGER = true
+			}
 		}
 	}
 
@@ -85,6 +95,70 @@ function addon:InitializeOptions()
 				name = L["All specified colors are vertex colors! (see wowwiki.com)"],
 				type = "description",
 				order = 2
+			},
+			filter = {
+				name = L["Filter"],
+				type = "group",
+				order = 95,
+				args = {
+					filterHeader = {
+						name = L["Role filter"],
+						type = "header",
+						order = 0
+					},
+					filterDesc = {
+						name = L["When enabled, the addon is hidden when your current spec's role is disabled below."],
+						type = "description",
+						order = 1
+					},
+					filterByRole = {
+						name = L["Enable role filter"],
+						type = "toggle",
+						disabled = function()
+							return not GetSpecialization or not GetSpecializationRole
+						end,
+						get = function() return self.db.profile.filterByRole end,
+						set = function(_, val)
+							self.db.profile.filterByRole = val
+							self:RefreshRoleFilter()
+						end,
+						order = 2,
+						width = "full"
+					},
+					enableTank = {
+						name = TANK,
+						type = "toggle",
+						disabled = function() return not self.db.profile.filterByRole end,
+						get = function() return self.db.profile.filterRoles.TANK end,
+						set = function(_, val)
+							self.db.profile.filterRoles.TANK = val
+							self:RefreshRoleFilter()
+						end,
+						order = 3
+					},
+					enableHealer = {
+						name = HEALER,
+						type = "toggle",
+						disabled = function() return not self.db.profile.filterByRole end,
+						get = function() return self.db.profile.filterRoles.HEALER end,
+						set = function(_, val)
+							self.db.profile.filterRoles.HEALER = val
+							self:RefreshRoleFilter()
+						end,
+						order = 4
+					},
+					enableDamager = {
+						name = DAMAGER,
+						type = "toggle",
+						disabled = function() return not self.db.profile.filterByRole end,
+						get = function() return self.db.profile.filterRoles.DAMAGER end,
+						set = function(_, val)
+							self.db.profile.filterRoles.DAMAGER = val
+							self:RefreshRoleFilter()
+						end,
+						order = 5
+					}
+				}
 			},
 			general = {
 				name = L["General"],
@@ -228,6 +302,13 @@ function addon:FixDatabase()
 	if self.db.profile.version then
 		-- nothing to do yet
 	end
+	-- Role filter defaults for existing profiles
+	if self.db.profile.filterByRole == nil then
+		self.db.profile.filterByRole = false
+	end
+	if not self.db.profile.filterRoles then
+		self.db.profile.filterRoles = { TANK = true, HEALER = true, DAMAGER = true }
+	end
 	self.db.profile.version = dbVersion
 end
 
@@ -255,11 +336,13 @@ end
 
 function addon:OnEnable()
 	self:ApplyOptions()
+	self:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED", "RefreshRoleFilter")
 	for name, _ in self:IterateModules() do
 			if self.db.profile.modules[name] then
 				self:EnableModule(name)
 			end
 	end
+	self:RefreshRoleFilter()
 	return true
 end
 
@@ -290,6 +373,32 @@ end
 
 function addon:OpenConfig()
 	ACD:Open("CC")
+end
+
+-- Returns true when the addon should be hidden (current spec role is disabled)
+function addon:IsRoleFiltered()
+	if not self.db.profile.filterByRole then
+		return false
+	end
+	if not GetSpecialization or not GetSpecializationRole then
+		return false
+	end
+	local spec = GetSpecialization()
+	if not spec then
+		return false
+	end
+	local role = GetSpecializationRole(spec)
+	if not role or not self.db.profile.filterRoles[role] then
+		return true
+	end
+	return false
+end
+
+function addon:RefreshRoleFilter()
+	if self:IsRoleFiltered() and self.anchor then
+		self.anchor:Hide()
+	end
+	-- When no longer filtered, next addon:Show() from any module will show the anchor again
 end
 
 --[[

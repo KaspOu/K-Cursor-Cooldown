@@ -60,3 +60,7 @@ L["Always"] = "Всегда"
 L["Width"] = "Ширина" -- ChatGPT
 L["x-Offset"] = "Смещение по X"
 L["y-Offset"] = "Смещение по Y"
+L["Filter"] = "Фильтр"
+L["Role filter"] = "Фильтр по роли"
+L["When enabled, the addon is hidden when your current spec's role is disabled below."] = "Если включено, аддон скрывается, когда роль вашей текущей специализации отключена ниже."
+L["Enable role filter"] = "Включить фильтр по роли"
