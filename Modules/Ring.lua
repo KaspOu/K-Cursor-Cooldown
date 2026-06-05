@@ -28,12 +28,21 @@ local function OnUpdate(self, elapsed)
 	end
 end
 
-local function OnShow(self)
-	if module.db.profile.rotate then
-		self:SetScript('OnUpdate', OnUpdate)
+local function ApplyRotation(frame)
+	if not frame then return end
+	if module.db.profile.rotate and frame:IsShown() then
+		frame:SetScript("OnUpdate", OnUpdate)
 	else
-		self:SetScript('OnUpdate', nil)
+		frame:SetScript("OnUpdate", nil)
 	end
+end
+
+local function OnShow(self)
+	ApplyRotation(self)
+end
+
+local function OnHide(self)
+	self:SetScript("OnUpdate", nil)
 end
 
 function module:ApplyOptions()
@@ -43,7 +52,8 @@ function module:ApplyOptions()
 			ringFrame = CreateFrame("Frame")
 			ringFrame:SetParent(anchor)
 			ringFrame:SetAllPoints()
-			ringFrame:SetScript('OnShow', OnShow)
+			ringFrame:SetScript("OnShow", OnShow)
+			ringFrame:SetScript("OnHide", OnHide)
 			ringFrame.texture = ringFrame:CreateTexture(nil, 'ARTWORK')
 			ringFrame.texture.timer = 0;
 			ringFrame.texture.hAngle = 0;
@@ -121,6 +131,7 @@ function module:UpdateVisibility()
 	end
 	if show then
 		ringFrame:Show()
+		ApplyRotation(ringFrame)
 	else
 		ringFrame:Hide()
 	end
@@ -300,7 +311,9 @@ end
 
 function module:Unlock(cursor)
 	ringFrame:Hide()
-	ringFrame:SetScript('OnShow', nil)
+	ringFrame:SetScript("OnShow", nil)
+	ringFrame:SetScript("OnHide", nil)
+	ringFrame:SetScript("OnUpdate", nil)
 	ringFrame:ClearAllPoints()
 	ringFrame:SetParent(cursor)
 	ringFrame:SetPoint("CENTER", cursor, "CENTER")
@@ -311,7 +324,8 @@ end
 
 function module:Lock()
 	ringFrame:Hide()
-	ringFrame:SetScript('OnShow', OnShow)
+	ringFrame:SetScript("OnShow", OnShow)
+	ringFrame:SetScript("OnHide", OnHide)
 	ringFrame:ClearAllPoints()
 	ringFrame:SetParent(addon.anchor)
 	ringFrame:SetAllPoints()

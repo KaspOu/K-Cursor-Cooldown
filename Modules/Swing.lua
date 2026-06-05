@@ -4,7 +4,7 @@
 
 -- Since Midnight (12)
 -- No more useable, due to combatevent restrictions
-if (issecretvalue) then return end
+if (secretwrap and issecretvalue(secretwrap(true))) then return end
 
 local addon = LibStub("AceAddon-3.0"):GetAddon("CC")
 local module = addon:NewModule("swing")
