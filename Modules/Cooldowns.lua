@@ -4,6 +4,8 @@ local media = LibStub("LibSharedMedia-3.0")
 local L = LibStub("AceLocale-3.0"):GetLocale("CC")
 local dbVersion = 1
 
+local hasSecrets = secretwrap and issecretvalue(secretwrap(true))
+
 local GetTime = GetTime
 --- table List of frames: {['spell']= spellPosition, ['icon']= icon, ['pos']= pos}
 local cdFrames = {}
@@ -95,9 +97,9 @@ function module:OnEnable()
   self:ACTIONBAR_UPDATE_COOLDOWN()
   self:RegisterEvent("SPELLS_CHANGED")
   self:RegisterEvent("ACTIONBAR_UPDATE_COOLDOWN")
-  -- if C_CurveUtil then
-  --   self:RegisterEvent("SPELL_UPDATE_COOLDOWN")
-  -- end
+  if not hasSecrets then
+    self:RegisterEvent("SPELL_UPDATE_COOLDOWN")
+  end
 end
 
 function module:OnDisable()
@@ -343,11 +345,16 @@ function module:ACTIONBAR_UPDATE_COOLDOWN()
           v.frame.isOnGCD = isOnGCD
           v.frame.durationObject = C_Spell.GetSpellCooldownDuration(spell)
           self:Show(v.frame)
-        elseif type(dur) == "number" and type(gcdLeft) == "number" then
-          if dur > gcdLeft then
+        elseif type(dur) == "number" then
+          local gcdDur = type(gcdLeft) == "number" and gcdLeft or 1.5
+          if dur > gcdDur then
             v.frame.startTime = start
             v.frame.duration = dur
             self:Show(v.frame)
+          else
+            v.frame.startTime = nil
+            v.frame.duration = nil
+            self:Hide(v.frame)
           end
         end
       end
@@ -397,7 +404,7 @@ end
 
 -- Since Midnight (12)
 local backCurve, textCurve
-if C_CurveUtil then
+if hasSecrets then
   textCurve = C_CurveUtil.CreateColorCurve();
   textCurve:SetType(Enum.LuaCurveType.Step);
   textCurve:AddPoint(0, CreateColor(1, 1, 1, 0));
@@ -412,7 +419,7 @@ end
 
 local function OnUpdate(self, elapsed)
   -- Since Midnight (12)
-  if C_CurveUtil then
+  if hasSecrets then
     self:SetAlphaFromBoolean(self.isOnGCD == false, 1, 0) -- is on cooldown: isOnGCD == false
     if not self.durationObject then
       return
@@ -425,21 +432,26 @@ local function OnUpdate(self, elapsed)
   end
   -- fallback
   if not self.startTime or not self.duration or self.duration <= 0 then
-    -- print("exit")
+    module:Hide(self)
     return
   end
-  local perc = (GetTime() - self.startTime) / self.duration
+  local elapsed = GetTime() - self.startTime
+  local remaining = self.duration - elapsed
+  if remaining <= 0 then
+    self.startTime = nil
+    self.duration = nil
+    module:Hide(self)
+    return
+  end
+  local perc = elapsed / self.duration
   self.texture:SetVertexColor(1.0, perc, perc)
-  local dur = floor((self.duration - (GetTime() - self.startTime)) * 10) / 10
+  local dur = floor(remaining * 10) / 10
   if dur > 99 then
     dur = '>>'
   elseif dur > 10 then
     dur = ceil(dur)
   end
   self.cdText:SetText(dur)
-  if perc >= 1 then
-    module:Hide(self)
-  end
 end
 
 function module:ApplyOptions()
