@@ -137,9 +137,7 @@ end
 
 function module:PopulateCdSpellsOptions()
   local cdSpells = self.db.char.cdSpells
-  for _, v in pairs(options.args.spells.args.list) do
-    v = nil
-  end
+  options.args.spells.args.list.args = {}
   for i, v in ipairs(cdSpells) do
     if v.spellID ~= nil then
 
@@ -331,18 +329,20 @@ function module:SPELL_UPDATE_COOLDOWN()
 end
 
 function module:ACTIONBAR_UPDATE_COOLDOWN()
-    local _, gcdLeft = addon.GetSpellCooldown(61304)
+    local scd = C_Spell.GetSpellCooldown(61304)
+    local gcdLeft = scd and scd.duration or nil
     for _, v in ipairs(cdFrames) do
       local spell = addon.GetSpellBookItemName(v.spell, addon.BOOKTYPE_SPELL)
-      local start, dur, isOnGCD = addon.GetSpellCooldown(spell)
-      if start == nil then
+      local scd = C_Spell.GetSpellCooldown(spell)
+      if scd == nil then
         self:Hide(v.frame)
       else
         -- Since Midnight (12)
         if C_Spell.GetSpellCooldownDuration then
-          v.frame.startTime = start
-          v.frame.duration = dur
-          v.frame.isOnGCD = isOnGCD
+          v.frame.startTime = scd.startTime
+          v.frame.duration = scd.duration
+          v.frame.isOnGCD = scd.isOnGCD
+          v.frame.isActive = scd.isActive
           v.frame.durationObject = C_Spell.GetSpellCooldownDuration(spell)
           self:Show(v.frame)
         elseif type(dur) == "number" then
@@ -420,7 +420,10 @@ end
 local function OnUpdate(self, elapsed)
   -- Since Midnight (12)
   if hasSecrets then
-    self:SetAlphaFromBoolean(self.isOnGCD == false, 1, 0) -- is on cooldown: isOnGCD == false
+    if (self.isActive ~= nil) then
+      local realCooldownActive = (self.isActive == true) and not (self.isOnGCD == true)
+      self:SetAlphaFromBoolean(realCooldownActive, 1, 0)
+    end
     if not self.durationObject then
       return
     end

@@ -237,7 +237,8 @@ end
 
 function module:ACTIONBAR_UPDATE_COOLDOWN()
   if spellNum then
-    local start, dur = addon.GetSpellCooldown(spellNum)
+    local scd = C_Spell.GetSpellCooldown(spellNum)
+    local start, dur = scd.startTime, scd.duration
     if type(dur) == "number" then
       if dur > 0 and dur <= 1.5 then
         gcdFrame.startTime = start

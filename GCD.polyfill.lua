@@ -6,14 +6,6 @@ local addon = LibStub("AceAddon-3.0"):GetAddon("CC")
 addon.BOOKTYPE_SPELL = BOOKTYPE_SPELL or Enum.SpellBookSpellBank.Player;
 addon.BOOKTYPE_PET = BOOKTYPE_PET or Enum.SpellBookSpellBank.Pet;
 
-addon.GetSpellCooldown = GetSpellCooldown or function(spellID)
-  local spellCooldownInfo = C_Spell.GetSpellCooldown(spellID);
-  if spellCooldownInfo then
-    return spellCooldownInfo.startTime, spellCooldownInfo.duration, spellCooldownInfo.isOnGCD, spellCooldownInfo.isEnabled, spellCooldownInfo.modRate;
-  end
-  return nil
-end
-
 addon.GetSpellInfo = GetSpellInfo or function(spellID)
   if not spellID then
     return nil;
