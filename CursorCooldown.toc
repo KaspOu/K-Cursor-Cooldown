@@ -1,4 +1,4 @@
-## Interface: 120007, 120100, 50504, 38002, 20506, 11509
+## Interface: 120100, 120105, 50504, 38002, 20506, 11509
 ## Title: Cursor Cooldown Reloaded by |cff00ff00Kallye|r
 ## Title-deDE: Cursor Cooldown Reloaded von |cff00ff00Kallye|r
 ## Title-esES: Cursor Cooldown Reloaded por |cff00ff00Kallye|r
@@ -21,7 +21,7 @@
 ## Notes-zhCN: 在您的光标周围显示全局冷却时间。 (+ 其他功能)
 ## Notes-zhTW: 在您的光標周圍顯示全局冷卻時間。 (+ 其他功能)
 ## Author: |cff00ff00Kallye|r (EU-Elune)
-## Version: 12.1.002
+## Version: 12.1.003
 ## OptionalDeps: Ace3, LibStub, LibSharedMedia-3.0
 ## X-Embeds: Ace3, LibStub, LibSharedMedia-3.0
 
@@ -31,7 +31,7 @@
 ## X-Credits: TimothyLuke, Nymbia, Nevcairiel (copied parts of Quartz), and original authors bakahar, Finghin and Sancty
 ## LoadSavedVariablesFirst: 1
 ## SavedVariables: CursorCooldownDB
-## IconTexture: Interface\Icons\INV_Artifact_DimensionalRift
+## IconTexture: Interface\AddOns\CursorCooldown\icon.png
 
 ## X-Website: https://github.com/KaspOu/K-Cursor-Cooldown/
 ## X-Curse-Project-ID: 1084211

@@ -25,3 +25,11 @@ externals:
       url: svn://svn.wowace.com/wow/libsharedmedia-3-0/mainline/trunk/LibSharedMedia-3.0
    Libs/LibStub:
       url: svn://svn.wowace.com/wow/libstub/mainline/trunk
+
+
+ignore:
+    - .vscode
+    - .release*
+    - .git*
+    - .icon*
+    - .logo*

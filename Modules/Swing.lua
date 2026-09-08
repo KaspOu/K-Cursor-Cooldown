@@ -267,7 +267,6 @@ end
 function module:UNIT_SPELLCAST_SUCCEEDED(event, unit, spell)
 	-- if not UnitIsPlayer(unit) or
 	if not swingMode then return end
-	-- TODO: EVOKER Bar support
 	if swingMode == 1 then
 		if spell == slam and slamStart then
 			startTime = startTime + GetTime() - slamStart
@@ -295,7 +294,7 @@ function module:UNIT_SPELLCAST_START(event, unit, spell)
 end
 
 function module:COMBAT_LOG_EVENT_UNFILTERED(event)
-	local timestamp, combatevent, _, srcGUID, srcName, srcFlags, dstName, dstGUID, dstFlags, _, _, spellID, spellName = CombatLogGetCurrentEventInfo()
+	local timestamp, combatevent, _, srcGUID, srcName, srcFlags, dstName, dstGUID, dstFlags, _, _, spellID, spellName = C_CombatLog.GetCurrentEventInfo()
 	if srcGUID == UnitGUID("player") then
 		if combatevent == "SWING_DAMAGE" or combatevent == "SWING_MISSED" then
 			self:Show()
