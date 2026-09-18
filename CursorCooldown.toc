@@ -1,4 +1,4 @@
-## Interface: 120100, 120105, 50504, 38002, 20506, 11509
+## Interface: 120100, 120105, 16001, 50504, 38002, 20506, 11509
 ## Title: Cursor Cooldown Reloaded by |cff00ff00Kallye|r
 ## Title-deDE: Cursor Cooldown Reloaded von |cff00ff00Kallye|r
 ## Title-esES: Cursor Cooldown Reloaded por |cff00ff00Kallye|r

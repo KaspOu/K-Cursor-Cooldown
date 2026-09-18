@@ -239,7 +239,7 @@ function module:ACTIONBAR_UPDATE_COOLDOWN()
   if spellNum then
     local scd = C_Spell.GetSpellCooldown(spellNum)
     local start, dur = scd.startTime, scd.duration
-    if type(dur) == "number" then
+    if type(dur) == "number" and not issecretvalue(dur) then
       if dur > 0 and dur <= 1.5 then
         gcdFrame.startTime = start
         gcdFrame.duration = dur
