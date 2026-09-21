@@ -4,8 +4,7 @@ local L = LibStub("AceLocale-3.0"):GetLocale("CC")
 local dbVersion = 1
 
 local GetTime = GetTime
-local spellNum = 61304
-local spellName
+local gcdSpellNum = C_Spell.DoesSpellExist(61304) and 61304 or 29515
 local gcdFrame
 local options
 local ringMod
@@ -47,13 +46,6 @@ function module:OnInitialize()
 end
 
 function module:GetOptions()
-  -- FIXME: Classic gcd reactivation
-  if not C_Spell.DoesSpellExist(61304) then
-    if not addon.db.profile.modules.gcd and not addon.db.profile.modules.gcd_back then
-      addon.db.profile.modules.gcd = true
-      addon.db.profile.modules.gcd_back = true
-    end
-  end
   options = {
     name = "GCD",
     type = "group",
@@ -236,8 +228,8 @@ function module:ApplyOptions()
 end
 
 function module:ACTIONBAR_UPDATE_COOLDOWN()
-  if spellNum then
-    local scd = C_Spell.GetSpellCooldown(spellNum)
+  if gcdSpellNum then
+    local scd = C_Spell.GetSpellCooldown(gcdSpellNum)
     local start, dur = scd.startTime, scd.duration
     if type(dur) == "number" and not issecretvalue(dur) then
       if dur > 0 and dur <= 1.5 then
@@ -262,10 +254,10 @@ local spells = {
 	["ROGUE"] = 1752,
 }
 function module:SPELLS_CHANGED()
-  if not C_Spell.DoesSpellExist(61304) then
+  if not C_Spell.DoesSpellExist(gcdSpellNum) then
     local _, class = UnitClass("player")
-    spellName = addon.GetSpellInfo(spells[class])
-    spellNum = spellName and spells[class] or nil -- addon:GetSpellPosInSpellbook(spellName)
+    local spellName = addon.GetSpellInfo(spells[class])
+    gcdSpellNum = spellName and spells[class] or nil -- addon:GetSpellPosInSpellbook(spellName)
   end
 end
 

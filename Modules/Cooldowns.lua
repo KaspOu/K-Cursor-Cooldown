@@ -7,6 +7,7 @@ local dbVersion = 1
 local hasSecrets = secretwrap and issecretvalue(secretwrap(true))
 
 local GetTime = GetTime
+local gcdSpellNum = C_Spell.DoesSpellExist(61304) and 61304 or 29515
 --- table List of frames: {['spell']= spellPosition, ['icon']= icon, ['pos']= pos}
 local cdFrames = {}
 local options
@@ -329,7 +330,7 @@ function module:SPELL_UPDATE_COOLDOWN()
 end
 
 function module:ACTIONBAR_UPDATE_COOLDOWN()
-    local scd = C_Spell.GetSpellCooldown(61304)
+    local scd = C_Spell.GetSpellCooldown(gcdSpellNum)
     local gcdLeft = scd and scd.duration or nil
     for _, v in ipairs(cdFrames) do
       local spell = addon.GetSpellBookItemName(v.spell, addon.BOOKTYPE_SPELL)
