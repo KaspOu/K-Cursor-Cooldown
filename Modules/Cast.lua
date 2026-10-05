@@ -310,7 +310,7 @@ end
 
 function module:OnEnable()
 	self:ApplyOptions()
-	self:RegisterEvent("UNIT_SPELLCAST_SENT")
+	self:RegisterUnitEvent("UNIT_SPELLCAST_SENT", "player")
 	self:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player")
 	self:RegisterUnitEvent("UNIT_SPELLCAST_START", "player")
 	self:RegisterUnitEvent("UNIT_SPELLCAST_STOP", "player")
@@ -445,8 +445,20 @@ end
 
 function module:UNIT_SPELLCAST_DELAYED(_, unit)
 	-- if not UnitIsPlayer(unit) then return end
-	_, _, _, _, castStartTime, castEndTime = UnitCastingInfo(unit)
-	castDuration = castEndTime and castEndTime - castStartTime or 0
+	local _, _, _, startTime, endTime = UnitCastingInfo(unit)
+
+    if not startTime or not endTime then
+        return
+    end
+
+    if addon.isSecret(startTime) or addon.isSecret(endTime) then
+        return
+    end
+
+    -- On conserve le début réel du cast.
+    -- Le pushback modifie essentiellement la fin.
+    castEndTime = endTime
+    castDuration = castEndTime - castStartTime
 end
 
 function module:UNIT_SPELLCAST_CHANNEL_START(_,unit)
