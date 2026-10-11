@@ -1,3 +1,4 @@
+---@diagnostic disable: inject-field, undefined-field
 local addon = LibStub("AceAddon-3.0"):GetAddon("CC")
 local module = addon:NewModule("cooldowns")
 local media = LibStub("LibSharedMedia-3.0")
@@ -181,7 +182,7 @@ function module:PopulateCdSpellsOptions()
             name = L["Remove Spell"],
             type = "execute",
             func = function()
-              tremove(cdSpells, i) -- FIXME
+              tremove(cdSpells, i)
               options.args.spells.args[tostring(i)] = nil
               self:SPELLS_CHANGED()
               self:PopulateCdSpellsOptions()
@@ -334,7 +335,7 @@ function module:ACTIONBAR_UPDATE_COOLDOWN()
     local gcdLeft = scd and scd.duration or nil
     for _, v in ipairs(cdFrames) do
       local spell = addon.GetSpellBookItemName(v.spell, addon.BOOKTYPE_SPELL)
-      local scd = C_Spell.GetSpellCooldown(spell)
+      local scd, dur = C_Spell.GetSpellCooldown(spell)
       if scd == nil then
         self:Hide(v.frame)
       else
@@ -347,6 +348,8 @@ function module:ACTIONBAR_UPDATE_COOLDOWN()
           v.frame.durationObject = C_Spell.GetSpellCooldownDuration(spell)
           self:Show(v.frame)
         elseif type(dur) == "number" then
+          -- old version: start, dur = addon.GetSpellCooldown(spell)
+          local start = scd
           local gcdDur = type(gcdLeft) == "number" and gcdLeft or 1.5
           if dur > gcdDur then
             v.frame.startTime = start
@@ -450,12 +453,13 @@ local function OnUpdate(self, elapsed)
   local perc = elapsed / self.duration
   self.texture:SetVertexColor(1.0, perc, perc)
   local dur = floor(remaining * 10) / 10
+  local txt = tostring(dur)
   if dur > 99 then
-    dur = '>>'
+    txt = '>>'
   elseif dur > 10 then
-    dur = ceil(dur)
+    txt = tostring(ceil(dur))
   end
-  self.cdText:SetText(dur)
+  self.cdText:SetText(txt)
 end
 
 function module:ApplyOptions()

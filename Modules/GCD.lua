@@ -1,3 +1,4 @@
+---@diagnostic disable: inject-field, undefined-field
 local addon = LibStub("AceAddon-3.0"):GetAddon("CC")
 local module = addon:NewModule("gcd")
 local L = LibStub("AceLocale-3.0"):GetLocale("CC")

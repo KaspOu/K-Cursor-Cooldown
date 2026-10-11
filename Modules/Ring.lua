@@ -1,3 +1,4 @@
+---@diagnostic disable: undefined-field, inject-field
 local addon = LibStub("AceAddon-3.0"):GetAddon("CC")
 local module = addon:NewModule("ring")
 local L = LibStub("AceLocale-3.0"):GetLocale("CC")
@@ -143,7 +144,6 @@ function module:OnInitialize()
 end
 
 function module:GetOptions()
-	local GetAddOnInfo = C_AddOns.GetAddOnInfo or GetAddOnInfo
 	options = {
 		name = L["Ring"],
 		type = "group",

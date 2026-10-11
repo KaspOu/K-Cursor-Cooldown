@@ -1,3 +1,4 @@
+---@diagnostic disable: undefined-field, inject-field
 local addon = LibStub("AceAddon-3.0"):GetAddon("CC")
 local module = addon:NewModule("cast")
 local media = LibStub("LibSharedMedia-3.0")
@@ -502,7 +503,6 @@ function module:ApplyOptions()
 	local anchor = addon.anchor
 	if self:IsEnabled() then
 		if not castFrame then
-			-- FIXME: Duplicate frame for Midnight?
 			castFrame = CreateFrame("Frame")
 			castFrame:SetParent(anchor)
 			castFrame:SetAllPoints()
@@ -559,7 +559,7 @@ function module:ApplyOptions()
 			local spellText = castFrame.spellText or castFrame:CreateFontString(nil, "OVERLAY")
 			spellText:ClearAllPoints()
 			spellText:SetPoint("BOTTOM", castFrame, "CENTER", 0 + self.db.profile.spellText.relativeX, self.db.profile.radius + 5 + self.db.profile.spellText.relativeY)
-			spellText:SetFont(media:Fetch("font", self.db.profile.spellText.font), self.db.profile.spellText.fontSize)
+			spellText:SetFont(tostring(media:Fetch("font", self.db.profile.spellText.font)), self.db.profile.spellText.fontSize)
 			spellText:SetTextColor(self.db.profile.spellText.fontColor.r, self.db.profile.spellText.fontColor.g, self.db.profile.spellText.fontColor.b, self.db.profile.spellText.fontColor.a)
 			spellText:Show()
 			castFrame.spellText = spellText

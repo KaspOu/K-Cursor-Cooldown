@@ -50,7 +50,15 @@
         "CLASS",
         "LOCALIZED_CLASS_NAMES_MALE",
         "CLASS_SORT_ORDER",
-        "RAID_CLASS_COLORS"
+        "RAID_CLASS_COLORS",
+        "TANK",
+        "HEALER",
+        "DAMAGER",
+        "secretwrap",
+        "issecretvalue",
+        "C_CombatLog",
+        "issecrettable",
+        "C_CurveUtil"
     ],
     "workbench.colorCustomizations": {
         "activityBar.activeBackground": "#ab307e",

@@ -274,7 +274,7 @@ end
 local function OnUpdate(self, elapsed)
 	local x, y, xOff, yOff
 	if addon.db.profile.attachToMouse then
-		x, y = GetCursorPosition(UIParent);
+		x, y = GetCursorPosition();
 		x = x + addon.db.profile.offset.x
 		y = y + addon.db.profile.offset.y
 	else
@@ -468,7 +468,7 @@ function addon:Unlock()
 	end
 end
 
-addon.BlizzardCastingBarFrame = PlayerCastingBarFrame or CastingBarFrame
+addon.BlizzardCastingBarFrame = PlayerCastingBarFrame
 local hasSecrets = secretwrap and issecretvalue(secretwrap(true))
 addon.isSecret = function() return false end
 if hasSecrets then
@@ -482,6 +482,5 @@ if hasSecrets then
 		return false
 	end
 end
-local GetAddOnInfo = C_AddOns.GetAddOnInfo or GetAddOnInfo
-local addonFolder = GetAddOnInfo("CursorCooldown")
+local addonFolder = C_AddOns.GetAddOnInfo("CursorCooldown")
 addon.addonFolder = "Interface\\AddOns\\"..addonFolder
