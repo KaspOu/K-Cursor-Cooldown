@@ -22,12 +22,12 @@ local defaults = {
 		thickness = 25,
 		sparkOnly = false,
 		spellText = {
-			enabled = false,
-			font = "Calibri",
-			fontSize = 12,
+			enabled = true,
+			font = "2002 Bold",
+			fontSize = 9,
 			fontColor = {r=1, g=1, b=1, a=0.8},
-			relativeX = 0,
-			relativeY = 0,
+			relativeX = 30,
+			relativeY = -70,
 		},
 		hideCastBar = false
 	}

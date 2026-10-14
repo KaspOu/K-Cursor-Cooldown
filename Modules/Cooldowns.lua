@@ -89,7 +89,7 @@ local defaults = {
   },
   profile = {
     size = 15,
-    font = "Calibri",
+    font = "2002 Bold",
     fontSize = 11
   }
 }
@@ -198,6 +198,11 @@ function module:PopulateCdSpellsOptions()
   end
 end
 
+local function round(n, decimals)
+  local mult = 10 ^ decimals
+  return math.floor(n * mult + 0.5) / mult
+end
+
 function module:GetOptions()
   options = {
     name = L["Spellcds"],
@@ -291,8 +296,8 @@ function module:GetOptions()
             disabled = function() return not addon.db.profile.modules.cooldowns end,
             func = function()
               for i, v in ipairs(self.db.char.cdSpells) do
-                v.pos.x = cos(((i - 1) / #self.db.char.cdSpells ) * 360) * 36
-                v.pos.y = sin(((i - 1) / #self.db.char.cdSpells ) * 360) * 36
+                v.pos.x = round( cos(((i - 1) / #self.db.char.cdSpells ) * 360) * 36, 2)
+                v.pos.y = round( sin(((i - 1) / #self.db.char.cdSpells ) * 360) * 36, 2)
               end
               self:ApplyOptions()
             end,
