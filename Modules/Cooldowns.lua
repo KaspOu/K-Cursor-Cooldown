@@ -340,7 +340,10 @@ function module:ACTIONBAR_UPDATE_COOLDOWN()
     local gcdLeft = scd and scd.duration or nil
     for _, v in ipairs(cdFrames) do
       local spell = addon.GetSpellBookItemName(v.spell, addon.BOOKTYPE_SPELL)
-      local scd, dur = C_Spell.GetSpellCooldown(spell)
+      local scd, dur = nil, nil
+      if spell then
+        scd, dur = C_Spell.GetSpellCooldown(spell)
+      end
       if scd == nil then
         self:Hide(v.frame)
       else
