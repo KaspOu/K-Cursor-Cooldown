@@ -468,6 +468,10 @@ function addon:Unlock()
 	end
 end
 
+function CC_AddonCompartmentFunc()
+    addon:OpenConfig()
+end
+
 addon.BlizzardCastingBarFrame = PlayerCastingBarFrame
 local hasSecrets = secretwrap and issecretvalue(secretwrap(true))
 addon.isSecret = function() return false end
