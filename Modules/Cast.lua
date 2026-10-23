@@ -181,7 +181,9 @@ function module:GetOptions()
 							self.db.profile.spellText.font = value
 							self:ApplyOptions()
 						end,
-				values = media:HashTable("font"),
+				values = function()
+					return media:HashTable("font")
+				end,
 				order = 32,
 				width= "double"
 			},

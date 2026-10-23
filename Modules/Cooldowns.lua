@@ -242,7 +242,9 @@ function module:GetOptions()
           self.db.profile.font = value
           self:ApplyOptions()
         end,
-        values = media:HashTable("font"),
+        values = function()
+          return media:HashTable("font")
+        end,
         order = 11
       },
       fontSize = {
