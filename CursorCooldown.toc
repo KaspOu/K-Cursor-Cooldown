@@ -32,7 +32,6 @@
 ## LoadSavedVariablesFirst: 1
 ## SavedVariables: CursorCooldownDB, CC_Settings
 ## IconTexture: Interface\AddOns\CursorCooldown\icon.png
-## AddonCompartmentFunc: CC_AddonCompartmentFunc
 
 ## X-Website: https://github.com/KaspOu/K-Cursor-Cooldown/
 ## X-Curse-Project-ID: 1084211

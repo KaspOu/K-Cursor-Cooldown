@@ -58,7 +58,8 @@
         "issecretvalue",
         "C_CombatLog",
         "issecrettable",
-        "C_CurveUtil"
+        "C_CurveUtil",
+        "AddonCompartmentFrame"
     ],
     "workbench.colorCustomizations": {
         "activityBar.activeBackground": "#ab307e",
