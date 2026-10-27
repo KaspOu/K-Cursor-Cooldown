@@ -1,4 +1,4 @@
-local L = LibStub("AceLocale-3.0"):NewLocale("CC", "enUS")
+local L = LibStub("AceLocale-3.0"):NewLocale("CC", "enUS", true)
 if not L then return end
 
 L["Add Spell"] = "Add Spell"

@@ -1,3 +1,5 @@
+if CC_Settings and CC_Settings.ForceEnglish then return end
+
 local L = LibStub("AceLocale-3.0"):NewLocale("CC", "ptBR")
 if not L then return end
 -- ChatGPT

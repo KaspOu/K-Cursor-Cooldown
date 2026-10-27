@@ -9,6 +9,8 @@ addon:SetDefaultModuleLibraries("AceEvent-3.0")
 local defaults, options
 local showRequests = {}
 
+CC_Settings = CC_Settings or {}
+
 function addon:Show(name)
 	if self:IsRoleFiltered() then
 		return
@@ -70,8 +72,8 @@ function addon:InitializeDefaults()
 			filterRoles = {
 				TANK = true,
 				HEALER = true,
-				DAMAGER = true
-			}
+				DAMAGER = true,
+			},
 		}
 	}
 
@@ -241,6 +243,29 @@ function addon:InitializeOptions()
 										end,
 						order = 5
 					},
+					forceEnglishSpacer = {
+						name = string.rep(" \n", 17),
+						type = "description",
+						width = "full",
+						order = 10,
+					},
+					misc = {
+						name = "Special",
+						type = "header",
+						order = 11,
+					},
+					forceEnglish = {
+						name = "Force English",
+						type = "toggle",
+						get = function()
+							return CC_Settings.ForceEnglish
+						end,
+						set = function(_, val)
+							CC_Settings.ForceEnglish = val
+						end,
+						desc = "Force english language, will require /reload",
+						order = 12,
+					},
 
 				},
 				order = 10
@@ -308,6 +333,9 @@ function addon:FixDatabase()
 	end
 	if not self.db.profile.filterRoles then
 		self.db.profile.filterRoles = { TANK = true, HEALER = true, DAMAGER = true }
+	end
+	if CC_Settings.ForceEnglish == nil then
+		CC_Settings.ForceEnglish = false
 	end
 	self.db.profile.version = dbVersion
 end

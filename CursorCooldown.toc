@@ -30,7 +30,7 @@
 ## X-License: GPL v3
 ## X-Credits: TimothyLuke, Nymbia, Nevcairiel (copied parts of Quartz), and original authors bakahar, Finghin and Sancty
 ## LoadSavedVariablesFirst: 1
-## SavedVariables: CursorCooldownDB
+## SavedVariables: CursorCooldownDB, CC_Settings
 ## IconTexture: Interface\AddOns\CursorCooldown\icon.png
 ## AddonCompartmentFunc: CC_AddonCompartmentFunc
 
