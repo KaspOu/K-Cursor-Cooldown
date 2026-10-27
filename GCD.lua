@@ -2,6 +2,7 @@ local addon = LibStub("AceAddon-3.0"):NewAddon("CC", "AceConsole-3.0", "AceEvent
 local L = LibStub("AceLocale-3.0"):GetLocale("CC")
 local ACD = LibStub("AceConfigDialog-3.0")
 local dbVersion = 1
+local addonName = ...
 
 addon:SetDefaultModuleState(false)
 addon:SetDefaultModuleLibraries("AceEvent-3.0")
@@ -66,6 +67,7 @@ function addon:InitializeDefaults()
 				y = 400
 			},
 			attachToMouse = true,
+			compartmentFilter = true,
 			modules = {},
 			-- Role filter: addon is hidden when current spec role is disabled
 			filterByRole = false,
@@ -80,6 +82,19 @@ function addon:InitializeDefaults()
 	for name, module in self:IterateModules() do
 		defaults.profile.modules[name] = true
 	end
+end
+
+local _compartmentRegistered = false
+function addon:RegisterCompartment()
+    if (AddonCompartmentFrame and self.db.profile.compartmentFilter ~= false and not _compartmentRegistered) then
+        AddonCompartmentFrame:RegisterAddon({
+            text = C_AddOns.GetAddOnMetadata(addonName, "Title"),
+            icon = C_AddOns.GetAddOnMetadata(addonName, "IconTexture"),
+            notCheckable = true,
+            func = function() addon:OpenConfig() end,
+        })
+		_compartmentRegistered = true
+    end
 end
 
 function addon:InitializeOptions()
@@ -254,9 +269,27 @@ function addon:InitializeOptions()
 						type = "header",
 						order = 11,
 					},
+					compartmentFilter = {
+						name = L["Addon Compartment"],
+						type = "toggle",
+						width = "full",
+						hidden = function()
+							return not AddonCompartmentFrame
+						end,
+						get = function()
+							return self.db.profile.compartmentFilter
+						end,
+						set = function(_, val)
+							self.db.profile.compartmentFilter = val
+							self:RegisterCompartment()
+						end,
+						desc = L["Display in Addon Compartment (on top right)"],
+						order = 12,
+					},
 					forceEnglish = {
 						name = "Force English",
 						type = "toggle",
+						width = "full",
 						get = function()
 							return CC_Settings.ForceEnglish
 						end,
@@ -264,7 +297,7 @@ function addon:InitializeOptions()
 							CC_Settings.ForceEnglish = val
 						end,
 						desc = "Force english language, will require /reload",
-						order = 12,
+						order = 13,
 					},
 
 				},
@@ -346,6 +379,7 @@ function addon:OnInitialize()
 	self:FixDatabase()
 
 	self:InitializeOptions()
+	self:RegisterCompartment()
 	local optionTitle = "Cursor Cooldown"
 	--@do-not-package@
 	-- Development icons
@@ -494,10 +528,6 @@ function addon:Unlock()
 	else
 		return L["All unlockable modules are disabled!"]
 	end
-end
-
-function CC_AddonCompartmentFunc()
-    addon:OpenConfig()
 end
 
 addon.BlizzardCastingBarFrame = PlayerCastingBarFrame
