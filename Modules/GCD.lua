@@ -25,6 +25,7 @@ function module:OnEnable()
   self:ApplyOptions()
   self:SPELLS_CHANGED()
   self:RegisterEvent("ACTIONBAR_UPDATE_COOLDOWN")
+  self:RegisterEvent("SPELL_UPDATE_COOLDOWN")
   self:RegisterEvent("SPELLS_CHANGED")
 end
 
@@ -152,94 +153,136 @@ function module:GetOptions()
 end
 
 function module:Show()
+  if not gcdFrame then return end
   addon:Show("gcd")
   if ringMod and ringMod:IsEnabled() then ringMod:Show("gcd") end
   gcdFrame:Show()
 end
 
 function module:Hide()
-  gcdFrame:Hide()
+  if gcdFrame then gcdFrame:Hide() end
 
   if ringMod and ringMod:IsEnabled() then ringMod:Hide("gcd") end
   addon:Hide("gcd")
 end
 
-local function OnUpdate(self, elapsed)
-  local gcdPerc = (GetTime() - self.startTime) / self.duration
-  if gcdPerc < 1 then
-    local angle = gcdPerc * 360
-    if not module.db.profile.sparkOnly and gcdFrame.donut then
-      gcdFrame.donut:SetAngle(angle)
-    end
-    angle = 360 - (-90 + angle)
-
-    local x = cos(angle) * module.db.profile.radius * 0.95
-    local y = sin(angle) * module.db.profile.radius * 0.95
-    local spark = gcdFrame.sparkTexture
-    spark:SetRotation(rad(angle + 90))
-    spark:ClearAllPoints()
-    spark:SetPoint("CENTER", gcdFrame, "CENTER", x, y)
-  else
-    module:Hide()
-  end
-end
+-- CooldownFrame gère lui-même le temps restant. Les valeurs de cooldown
+-- peuvent être secrètes : ne jamais les lire ni effectuer de calcul Lua dessus.
 
 function module:ApplyOptions()
   local anchor = addon.anchor
   if self:IsEnabled() then
+    local size = self.db.profile.radius * 2
+    local r, g, b, alpha = self.db.profile.backgroundColor.r, self.db.profile.backgroundColor.g, self.db.profile.backgroundColor.b, self.db.profile.backgroundColor.a
     if not gcdFrame then
       gcdFrame = CreateFrame("Frame")
       gcdFrame:SetParent(anchor)
       gcdFrame:SetAllPoints()
 
-      gcdFrame.sparkTexture = gcdFrame:CreateTexture(nil, 'OVERLAY')
+      -- Le Cooldown natif accepte directement les DurationObjects, y compris
+      -- lorsqu'ils contiennent des Secret Values.
+      gcdFrame.backgroundTexture = gcdFrame:CreateTexture(nil, "BACKGROUND")
+      gcdFrame.backgroundTexture:SetPoint("CENTER", gcdFrame, "CENTER")
+      gcdFrame.backgroundTexture:SetTexture(addon.addonFolder .. "\\Textures\\gcd_ring_" .. self.db.profile.thickness)
+      gcdFrame.backgroundTexture:SetVertexColor(r, g, b)
+      gcdFrame.backgroundTexture:SetAlpha(alpha)
+
+      gcdFrame.cooldown = CreateFrame("Cooldown", nil, gcdFrame, "CooldownFrameTemplate")
+      gcdFrame.cooldown:ClearAllPoints()
+      gcdFrame.cooldown:SetPoint("CENTER", gcdFrame, "CENTER")
+      gcdFrame.cooldown:SetFrameLevel(gcdFrame:GetFrameLevel() + 2)
+      gcdFrame.cooldown:SetDrawBling(false)
+      gcdFrame.cooldown:SetDrawSwipe(true)
+      gcdFrame.cooldown:SetDrawEdge(true)
+      gcdFrame.cooldown:SetReverse(true)
+      gcdFrame.cooldown:SetHideCountdownNumbers(true)
+      gcdFrame.cooldown:SetSwipeTexture(addon.addonFolder .. "\\Textures\\gcd_ring_" .. self.db.profile.thickness)
+      gcdFrame.cooldown:SetEdgeTexture("Interface\\Cooldown\\edge")
+      gcdFrame.cooldown:SetUseCircularEdge(true)
+
+      -- Texture conservée pour compatibilité visuelle avec les options existantes.
+      gcdFrame.sparkTexture = gcdFrame:CreateTexture(nil, "OVERLAY")
       gcdFrame.sparkTexture:SetTexture("Interface\\CastingBar\\UI-CastingBar-Spark")
       gcdFrame.sparkTexture:SetBlendMode("ADD")
+      gcdFrame.sparkTexture:SetWidth(size)
+      gcdFrame.sparkTexture:SetHeight(size)
     end
+    gcdFrame.backgroundTexture:SetVertexColor(r, g, b)
+    gcdFrame.backgroundTexture:SetAlpha(alpha)
+    gcdFrame.backgroundTexture:SetWidth(size)
+    gcdFrame.backgroundTexture:SetHeight(size)
+    gcdFrame.backgroundTexture:SetShown(not self.db.profile.sparkOnly)
+    gcdFrame.cooldown:SetWidth(size)
+    gcdFrame.cooldown:SetHeight(size)
+    gcdFrame.cooldown:SetSwipeTexture(addon.addonFolder .. "\\Textures\\gcd_ring_" .. self.db.profile.thickness)
+    gcdFrame.cooldown:Hide()
+    gcdFrame.sparkTexture:SetWidth(size)
+    gcdFrame.sparkTexture:SetHeight(size)
+    gcdFrame.sparkTexture:Hide()
+
     self:Hide()
 
-    if not self.db.profile.sparkOnly then
-      if not gcdFrame.donut then
-        local donut = addon.donut:New(true, self.db.profile.radius, self.db.profile.thickness, self.db.profile.barColor, self.db.profile.backgroundColor)
-        donut:AttachTo(gcdFrame)
-        gcdFrame.donut = donut
-      else
-        local donut = gcdFrame.donut
-        donut:SetRadius(self.db.profile.radius)
-        donut:SetThickness(self.db.profile.thickness)
-        donut:SetBarColor(self.db.profile.barColor)
-        donut:SetBackgroundColor(self.db.profile.backgroundColor)
-      end
+    local cooldown = gcdFrame.cooldown
+    cooldown:Clear()
+    cooldown:SetSwipeColor(
+      self.db.profile.barColor.r,
+      self.db.profile.barColor.g,
+      self.db.profile.barColor.b,
+      self.db.profile.barColor.a
+    )
+    cooldown:SetEdgeScale(self.db.profile.radius / 23)
+    cooldown:SetEdgeColor(
+      self.db.profile.sparkColor.r,
+      self.db.profile.sparkColor.g,
+      self.db.profile.sparkColor.b,
+      self.db.profile.sparkColor.a
+    )
+    cooldown:SetEdgeTexture(
+      "Interface\\Cooldown\\edge",
+      self.db.profile.sparkColor.r,
+      self.db.profile.sparkColor.g,
+      self.db.profile.sparkColor.b,
+      self.db.profile.sparkColor.a
+    )
+    cooldown:SetUseCircularEdge(true)
+    cooldown:SetSize(size, size)
+    cooldown:SetDrawSwipe(not self.db.profile.sparkOnly)
+    cooldown:SetDrawEdge(true)
 
-      gcdFrame:SetScript("OnShow", function(self) self.donut:Show() end)
-      gcdFrame:SetScript("OnHide", function(self) self.donut:Hide() end)
-    elseif gcdFrame.donut then
-      gcdFrame.donut:Hide()
-      gcdFrame:SetScript("OnShow", nil)
-      gcdFrame:SetScript("OnHide", nil)
-    end
-
-    gcdFrame.sparkTexture:SetVertexColor(self.db.profile.sparkColor.r, self.db.profile.sparkColor.g, self.db.profile.sparkColor.b, self.db.profile.sparkColor.a)
-    gcdFrame.sparkTexture:SetWidth(self.db.profile.radius)
-    gcdFrame.sparkTexture:SetHeight(self.db.profile.radius)
-    gcdFrame.sparkTexture:Show()
-
-    gcdFrame:SetScript('OnUpdate', OnUpdate)
+    gcdFrame:SetScript("OnShow", function(frame)
+      if frame.cooldown then frame.cooldown:Show() end
+    end)
+    gcdFrame:SetScript("OnHide", function(frame)
+      if frame.cooldown then frame.cooldown:Hide() end
+    end)
+    gcdFrame:SetScript("OnUpdate", nil)
   end
 end
 
+function module:SPELL_UPDATE_COOLDOWN()
+  self:ACTIONBAR_UPDATE_COOLDOWN()
+end
+
 function module:ACTIONBAR_UPDATE_COOLDOWN()
-  if gcdSpellNum then
-    local scd = C_Spell.GetSpellCooldown(gcdSpellNum)
-    local start, dur = scd.startTime, scd.duration
-    if type(dur) == "number" and not issecretvalue(dur) then
-      if dur > 0 and dur <= 1.5 then
-        gcdFrame.startTime = start
-        gcdFrame.duration = dur
-        self:Show()
-      end
+  if not gcdSpellNum or not gcdFrame or not gcdFrame.cooldown then
+    return
+  end
+
+  local info = C_Spell.GetSpellCooldown(gcdSpellNum)
+
+  -- isOnGCD est un booléen non-secret sur les versions récentes de Retail.
+  -- Ne pas inspecter startTime/duration : ces champs peuvent être secrets.
+  if info and info.isOnGCD then
+    local duration = C_Spell.GetSpellCooldownDuration(gcdSpellNum)
+    if duration then
+      gcdFrame.cooldown:SetCooldownFromDurationObject(duration)
+      self:Show()
+      return
     end
   end
+
+  gcdFrame.cooldown:Clear()
+  self:Hide()
 end
 
 local spells = {
@@ -263,9 +306,7 @@ function module:SPELLS_CHANGED()
 end
 
 function module:Unlock(cursor)
-  if not self.db.profile.sparkOnly then
-    gcdFrame:SetScript("OnUpdate", nil)
-    gcdFrame.donut:SetAngle(195)
+  if gcdFrame and not self.db.profile.sparkOnly then
     gcdFrame:SetParent(cursor)
     gcdFrame:SetAllPoints()
     gcdFrame:Show()
@@ -273,10 +314,9 @@ function module:Unlock(cursor)
 end
 
 function module:Lock()
-  if not self.db.profile.sparkOnly then
+  if gcdFrame and not self.db.profile.sparkOnly then
     gcdFrame:Hide()
     gcdFrame:SetParent(addon.anchor)
     gcdFrame:SetAllPoints()
-    gcdFrame:SetScript("OnUpdate", OnUpdate)
   end
 end
