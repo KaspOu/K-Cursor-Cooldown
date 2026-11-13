@@ -297,9 +297,10 @@ function module:GetOptions()
             type = "execute",
             disabled = function() return not addon.db.profile.modules.cooldowns end,
             func = function()
+              local radius = addon:GetModule("cast").db.profile.radius * (36 / 24)
               for i, v in ipairs(self.db.char.cdSpells) do
-                v.pos.x = round( cos(((i - 1) / #self.db.char.cdSpells ) * 360) * 36, 2)
-                v.pos.y = round( sin(((i - 1) / #self.db.char.cdSpells ) * 360) * 36, 2)
+                v.pos.x = round( cos(((i - 1) / #self.db.char.cdSpells ) * 360) * radius, 2)
+                v.pos.y = round( sin(((i - 1) / #self.db.char.cdSpells ) * 360) * radius, 2)
               end
               self:ApplyOptions()
             end,
